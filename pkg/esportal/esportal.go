@@ -1,0 +1,5 @@
+package esportal
+
+func GetRank(){
+
+}
