@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var (
@@ -20,14 +21,11 @@ func faceItRest(subPath string) ([]byte, int, error) {
 	if err != nil {
 		return nil,500, err
 	}
-	request.Header.Set("Bearer", faceitApiKey)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", faceitApiKey))
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
 		return nil,response.StatusCode, err
-	}
-	if response.StatusCode != 200{
-		return nil, response.StatusCode, nil
 	}
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
@@ -58,9 +56,10 @@ func GetRank(nick string, steamid string) (int, int, string, error){
 		}
 		_ = json.Unmarshal(data, &faceitPlayer)
 	}
+
 	return faceitPlayer.Games.CSGO.SkillLevel,
 	faceitPlayer.Games.CSGO.Elo,
-	faceitPlayer.FaceitUrl,
+	strings.ReplaceAll(faceitPlayer.FaceitUrl,"{lang}", "en"),
 	nil
 }
 
@@ -74,7 +73,6 @@ func searchPlayer(nick string, steamid string) ([]byte ,error) {
 	}
 	_ = json.Unmarshal(result, &searchResult)
 	for _, item := range searchResult.Items {
-		fmt.Printf("Searching for user: %s", item.Nickname)
 		playerSubPath := fmt.Sprintf("players?nickname=%s&game=csgo", item.Nickname)
 		playerData, _, err := faceItRest(playerSubPath)
 		if err != nil {
@@ -85,5 +83,5 @@ func searchPlayer(nick string, steamid string) ([]byte ,error) {
 			return playerData, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find any user")
+	return nil, fmt.Errorf("could not find any faceit user for: %s", nick)
 }

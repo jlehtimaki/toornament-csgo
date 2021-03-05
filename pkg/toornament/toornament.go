@@ -14,6 +14,10 @@ var (
 	toornament = "https://api.toornament.com"
 )
 
+func (p *Player) GetValues() *Player {
+	return p
+}
+
 func getParticipantsToornament() ([]Team, error) {
 	var teams []Team
 	rangeMin := 0

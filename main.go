@@ -11,12 +11,13 @@ func main()  {
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
-	for _, player := range team.Players {
-		player.FaceitRank, player.FaceitElo, player.FaceitUrl, err = f.GetRank(player.Name, player.CustomFields.SteamId)
+	for i, player := range team.Players {
+		team.Players[i].FaceitRank, team.Players[i].FaceitElo, team.Players[i].FaceitUrl, err = f.GetRank(player.Name, player.CustomFields.SteamId)
 		if err != nil {
 			fmt.Printf("error: %s\n", err)
 		}
 	}
+
 	fmt.Println(team)
 }
 
