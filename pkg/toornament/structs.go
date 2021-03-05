@@ -16,7 +16,8 @@ type Player struct {
 		SteamId		string	`json:"steam_id_"`
 	} `json:"custom_fields"`
 	MMRank			string
-	FaceitRank		string
+	FaceitRank		int
+	FaceitElo		int
+	FaceitUrl		string
 	EsportalRank	string
-
 }

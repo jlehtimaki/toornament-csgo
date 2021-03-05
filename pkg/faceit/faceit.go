@@ -1,9 +1,11 @@
 package faceit
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 var (
@@ -11,6 +13,8 @@ var (
 )
 
 func faceItRest(subPath string) ([]byte, int, error) {
+	// Import Faceit API Key
+	faceitApiKey := os.Getenv("FACEIT_API_KEY")
 	apiUrl := fmt.Sprintf("%s/%s", faceItAPI, subPath)
 	request, err := http.NewRequest("GET", apiUrl, nil)
 	if err != nil {
@@ -32,13 +36,54 @@ func faceItRest(subPath string) ([]byte, int, error) {
 	return data,response.StatusCode, nil
 }
 
-func GetRank(player Player) (string, error){
-	getPlayerUrl := fmt.Sprintf("players?nickname=%s&game=csgo", player.Name)
-	playerData, statusCode, err := faceItRest(getPlayerUrl)
+func GetRank(nick string, steamid string) (int, int, string, error){
+	var faceitPlayer Player
+	getPlayerUrl := fmt.Sprintf("players?nickname=%s&game=csgo", nick)
+	data, statusCode, err := faceItRest(getPlayerUrl)
 	if err != nil {
-		return "", err
+		return 0, 0, "", err
 	}
 	if statusCode == 404 {
-		//searchPlayer := fmt.Sprintf("search/players?nickname=%s&game=csgo&offset=0&limit=20", player.Name)
+		data, err = searchPlayer(nick, steamid)
+		if err != nil {
+			return 0, 0, "", err
+		}
 	}
+	_ = json.Unmarshal(data, &faceitPlayer)
+
+	if steamid != faceitPlayer.Steam64 {
+		data, err = searchPlayer(nick, steamid)
+		if err != nil {
+			return 0,0,"", err
+		}
+		_ = json.Unmarshal(data, &faceitPlayer)
+	}
+	return faceitPlayer.Games.CSGO.SkillLevel,
+	faceitPlayer.Games.CSGO.Elo,
+	faceitPlayer.FaceitUrl,
+	nil
+}
+
+func searchPlayer(nick string, steamid string) ([]byte ,error) {
+	var searchResult SearchResult
+	var player	Player
+	searchSubPath := fmt.Sprintf("search/players?nickname=%s&game=csgo&offset=0&limit=20", nick)
+	result, _, err := faceItRest(searchSubPath)
+	if err != nil {
+		return nil, err
+	}
+	_ = json.Unmarshal(result, &searchResult)
+	for _, item := range searchResult.Items {
+		fmt.Printf("Searching for user: %s", item.Nickname)
+		playerSubPath := fmt.Sprintf("players?nickname=%s&game=csgo", item.Nickname)
+		playerData, _, err := faceItRest(playerSubPath)
+		if err != nil {
+			return nil, err
+		}
+		_ = json.Unmarshal(playerData, &player)
+		if steamid == player.Steam64 {
+			return playerData, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find any user")
 }

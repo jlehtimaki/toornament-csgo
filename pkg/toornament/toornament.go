@@ -14,13 +14,6 @@ var (
 	toornament = "https://api.toornament.com"
 )
 
-func getTeamPlayersInfo(team Team) (Team, error){
-	for _, player := range team.Players {
-		fmt.Println(player)
-	}
-	return team, nil
-}
-
 func getParticipantsToornament() ([]Team, error) {
 	var teams []Team
 	rangeMin := 0
@@ -80,19 +73,17 @@ func getParticipantsToornament() ([]Team, error) {
 }
 
 func GetParticipant(teamName string) (Team, error){
-	var team Team
 	// First get all teams and get the ID of the team
 	teams, err := getParticipantsToornament()
 	if err != nil {
-		return team, err
+		return Team{}, err
 	}
 
 	for _, t := range teams{
 		if t.Name == teamName {
-			//team, err = getTeamPlayersInfo(t)
-			break
+			return t, nil
 		}
 	}
 
-	return team, nil
+	return Team{}, fmt.Errorf("could not find the team")
 }
