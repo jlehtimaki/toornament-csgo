@@ -15,7 +15,6 @@ func main()  {
 	// Loop through players and get their data
 	for i, _ := range team.Players {
 		err = f.GetData(&team.Players[i])
-		break
 		if err != nil {
 			fmt.Printf("error: %s\n", err)
 		}
