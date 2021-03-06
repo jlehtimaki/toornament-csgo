@@ -3,9 +3,11 @@ package faceit
 import (
 	"encoding/json"
 	"fmt"
+	t "github.com/jlehtimaki/toornament-csgo/pkg/toornament"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -16,6 +18,9 @@ var (
 func faceItRest(subPath string) ([]byte, int, error) {
 	// Import Faceit API Key
 	faceitApiKey := os.Getenv("FACEIT_API_KEY")
+	if faceitApiKey == "" {
+		return nil, 0, fmt.Errorf("could not find FACEIT_API_KEY")
+	}
 	apiUrl := fmt.Sprintf("%s/%s", faceItAPI, subPath)
 	request, err := http.NewRequest("GET", apiUrl, nil)
 	if err != nil {
@@ -34,54 +39,70 @@ func faceItRest(subPath string) ([]byte, int, error) {
 	return data,response.StatusCode, nil
 }
 
-func GetRank(nick string, steamid string) (int, int, string, error){
+func GetData(player *t.Player) error{
 	var faceitPlayer Player
-	getPlayerUrl := fmt.Sprintf("players?nickname=%s&game=csgo", nick)
-	data, statusCode, err := faceItRest(getPlayerUrl)
+	subPath := fmt.Sprintf("players?game=csgo&game_player_id=%s", player.CustomFields.SteamId)
+	data, statusCode, err := faceItRest(subPath)
 	if err != nil {
-		return 0, 0, "", err
+		return err
 	}
 	if statusCode == 404 {
-		data, err = searchPlayer(nick, steamid)
-		if err != nil {
-			return 0, 0, "", err
-		}
+			return fmt.Errorf("could not find user: %s", player.Name)
 	}
 	_ = json.Unmarshal(data, &faceitPlayer)
 
-	if steamid != faceitPlayer.Steam64 {
-		data, err = searchPlayer(nick, steamid)
-		if err != nil {
-			return 0,0,"", err
-		}
-		_ = json.Unmarshal(data, &faceitPlayer)
-	}
+	player.Faceit.Elo = faceitPlayer.Games.CSGO.Elo
+	player.Faceit.Rank = faceitPlayer.Games.CSGO.SkillLevel
+	player.Faceit.Url = strings.ReplaceAll(faceitPlayer.FaceitUrl, "{lang}", "en")
+	player.Faceit.Avatar = faceitPlayer.Avatar
+	player.Faceit.Id = faceitPlayer.Id
 
-	return faceitPlayer.Games.CSGO.SkillLevel,
-	faceitPlayer.Games.CSGO.Elo,
-	strings.ReplaceAll(faceitPlayer.FaceitUrl,"{lang}", "en"),
-	nil
+	err = getStats(player)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func searchPlayer(nick string, steamid string) ([]byte ,error) {
-	var searchResult SearchResult
-	var player	Player
-	searchSubPath := fmt.Sprintf("search/players?nickname=%s&game=csgo&offset=0&limit=20", nick)
-	result, _, err := faceItRest(searchSubPath)
-	if err != nil {
-		return nil, err
+func getStats(player *t.Player) error {
+	var stats Stats
+	subPath := fmt.Sprintf("players/%s/stats/csgo", player.Faceit.Id)
+	data, statusCode, err := faceItRest(subPath)
+	if statusCode != 200 || err != nil{
+		return err
 	}
-	_ = json.Unmarshal(result, &searchResult)
-	for _, item := range searchResult.Items {
-		playerSubPath := fmt.Sprintf("players?nickname=%s&game=csgo", item.Nickname)
-		playerData, _, err := faceItRest(playerSubPath)
-		if err != nil {
-			return nil, err
+	_ = json.Unmarshal(data, &stats)
+
+	// Find favourite map and least favourite + stats from them
+	mostPlayed := stats.Maps[0]
+	leastPlayed := stats.Maps[0]
+	for _, m := range stats.Maps {
+		mInt, _ := strconv.Atoi(m.Stats.Matches)
+		mostInt, _ := strconv.Atoi(mostPlayed.Stats.Matches)
+		leastInt, _ := strconv.Atoi(leastPlayed.Stats.Matches)
+		if mInt > mostInt {
+			mostPlayed = m
 		}
-		_ = json.Unmarshal(playerData, &player)
-		if steamid == player.Steam64 {
-			return playerData, nil
+		if mInt < leastInt {
+			leastPlayed = m
 		}
 	}
-	return nil, fmt.Errorf("could not find any faceit user for: %s", nick)
+
+	// Save data to player object
+	player.Faceit.KD = stats.Overall.KD
+	player.Faceit.HSP = stats.Overall.HSP
+	// Save MostPlayedMap data
+	player.Faceit.MostPlayedMap.Name = mostPlayed.Name
+	player.Faceit.MostPlayedMap.Matches, _ = strconv.Atoi(mostPlayed.Stats.Matches)
+	player.Faceit.MostPlayedMap.KD = mostPlayed.Stats.KD
+	player.Faceit.MostPlayedMap.WinRate = mostPlayed.Stats.WinRate
+	player.Faceit.MostPlayedMap.Icon = mostPlayed.Image
+	// Save LeastPlayedMap data
+	player.Faceit.LeastPlayedMap.Name = leastPlayed.Name
+	player.Faceit.LeastPlayedMap.Matches, _ = strconv.Atoi(leastPlayed.Stats.Matches)
+	player.Faceit.LeastPlayedMap.KD = leastPlayed.Stats.KD
+	player.Faceit.LeastPlayedMap.WinRate = leastPlayed.Stats.WinRate
+	player.Faceit.LeastPlayedMap.Icon = leastPlayed.Image
+
+	return nil
 }

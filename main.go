@@ -7,12 +7,15 @@ import (
 )
 
 func main()  {
+	// Get team
 	team, err := t.GetParticipant("Polar Squad")
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
-	for i, player := range team.Players {
-		team.Players[i].FaceitRank, team.Players[i].FaceitElo, team.Players[i].FaceitUrl, err = f.GetRank(player.Name, player.CustomFields.SteamId)
+	// Loop through players and get their data
+	for i, _ := range team.Players {
+		err = f.GetData(&team.Players[i])
+		break
 		if err != nil {
 			fmt.Printf("error: %s\n", err)
 		}
@@ -20,15 +23,3 @@ func main()  {
 
 	fmt.Println(team)
 }
-
-//func getTeamPlayersInfo(team Team) (Team, error){
-//	var err error
-//	for _, player := range team.Players {
-//		player.FaceitRank, player.FaceitElo, player.FaceitUrl, err = faceit.GetRank(player.Name, player.CustomFields.SteamId)
-//		if err != nil {
-//			return team, nil
-//		}
-//		fmt.Println(player)
-//	}
-//	return team, nil
-//}

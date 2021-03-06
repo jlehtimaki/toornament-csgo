@@ -10,14 +10,39 @@ type Team struct {
 	} `json:"custom_fields"`
 }
 
+type Match struct {
+	Name	string
+}
+
 type Player struct {
 	Name			string	`json:"name"`
 	CustomFields 	struct{
 		SteamId		string	`json:"steam_id_"`
 	} `json:"custom_fields"`
-	MMRank			string
-	FaceitRank		int
-	FaceitElo		int
-	FaceitUrl		string
-	EsportalRank	string
+	MM				struct{
+		Rank		string
+	}
+	Faceit			struct{
+		Id			string
+		Rank		int
+		Elo			int
+		Url			string
+		Avatar		string
+		MostPlayedMap	Map
+		LeastPlayedMap	Map
+		Weapon		string
+		KD			string
+		HSP			string
+	}
+	Esportal		struct{
+		Rank		string
+	}
+}
+
+type Map struct {
+	Name	string
+	Icon	string
+	WinRate	string
+	Matches	int
+	KD		string
 }
