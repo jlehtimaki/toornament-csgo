@@ -5,15 +5,17 @@ on:
     branches:
       - "master"
 
-steps:
-  - uses: actions/checkout@v2
-  - id: deploy
-    uses: google-github-actions/deploy-cloud-functions@main
-    with:
-      name: CSGO
-      runtime: go113
-      credentials: ${{ secrets.GCP_SA_KEY }}
+jobs:
+  deploy:
+    steps:
+      - uses: actions/checkout@v2
+      - id: deploy
+        uses: google-github-actions/deploy-cloud-functions@main
+        with:
+          name: CSGO
+          runtime: go113
+          credentials: ${{ secrets.GCP_SA_KEY }}
 
-  # Example of using the output
-  - id: test
-    run: curl "${{ steps.deploy.outputs.url }}"
+      # Example of using the output
+      - id: test
+        run: curl "${{ steps.deploy.outputs.url }}"
