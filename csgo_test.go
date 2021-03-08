@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestCSGOFunction(t *testing.T){
+func TestIntegrationCSGOFunction(t *testing.T){
 	payload := strings.NewReader(`
 {
 	"team_name": "Polar Squad"
