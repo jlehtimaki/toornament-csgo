@@ -27,6 +27,11 @@ func getParticipantsToornament() ([]Team, error) {
 	seasonId := os.Getenv("SEASON_ID")
 	toornamentApiKey := os.Getenv("TOORNAMENT_API_KEY")
 
+	if seasonId == "" || toornamentApiKey == "" {
+		return teams,
+		fmt.Errorf("SEASON_ID (%s) is empty or TOORNAMENT_API_KEY (%s) is empty", seasonId, toornamentApiKey)
+	}
+
 	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/participants", seasonId)
 	apiUrl := fmt.Sprintf("%s/%s",toornament, subPath)
 
