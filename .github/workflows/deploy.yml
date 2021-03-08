@@ -20,7 +20,7 @@ jobs:
           name: CSGO
           runtime: go113
           region: europe-west1
-          env_vars: FACEIT_API_KEY=${{ secrets.FACEIT_API_KEY }}, TOORNAMENT_API_KEY=${{ secrets.TOORNAMENT_API_KEY }}, SEASON_ID=4191528294501023744
+          env_vars: FACEIT_API_KEY=${{ secrets.FACEIT_API_KEY }},TOORNAMENT_API_KEY=${{ secrets.TOORNAMENT_API_KEY }},SEASON_ID=4191528294501023744
           credentials: ${{ secrets.GCP_SA_KEY }}
 
       # Example of using the output
