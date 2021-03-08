@@ -5,11 +5,7 @@ on:
     branches:
       - "master"
 
-jobs:
-  - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-    with:
-      service_account_key: ${{ secrets.GCP_SA_KEY }}
-      export_default_credentials: true
+steps:
   - uses: actions/checkout@v2
   - id: deploy
     uses: google-github-actions/deploy-cloud-functions@main
