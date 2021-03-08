@@ -11,25 +11,44 @@ import (
 
 func CSGO(w http.ResponseWriter, r *http.Request) {
 	// Payload checks
+	var ret []byte
+	var err error
 	var d struct {
-		TeamName string `json:"team_name"`
+		Type string `json:"type"`
+		Value string `json:"value"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
 		log.Errorf( "wrong type of payload")
-		panic("error occured")
+		panic("error occured, check logs")
 	}
-	if d.TeamName == "" {
-		log.Errorf("could not parse payload")
-		panic("error occured")
+	if d.Type == "" || d.Value == "" {
+		log.Errorf("either value or type is empty")
+		panic("error occured, check logs")
 	}
 
-	// Get information about the team
-	team, err := t.GetParticipant(d.TeamName)
-	if err != nil {
-		log.Errorf("Error: %s", err)
-		panic("could not get participant")
+	if d.Type == "team" {
+		ret, err = getTeam(d.Value)
+		if err != nil {
+			log.Fatal(err)
+			panic("error occured while getting team information")
+		}
+	} else if d.Type == "standings" {
+		ret, err = getStandings(d.Value)
+		if err != nil {
+			log.Fatal(err)
+			panic("error occured while getting standings")
+		}
 	}
-	// Loop through players and get their data
+	_, _ = fmt.Fprintf(w, string(ret))
+}
+
+func getTeam(teamName string) ([]byte, error){
+	// Get information about the team
+	team, err := t.GetParticipant(teamName)
+	if err != nil {
+		return nil, err
+	}
+	//Loop through players and get their data
 	for i, _ := range team.Players {
 		err = f.GetData(&team.Players[i])
 		if err != nil {
@@ -38,8 +57,11 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 	}
 	ret, err := json.Marshal(team)
 	if err != nil {
-		log.Errorf( "could not parse return value")
-		panic("could not parse data")
+		return nil, fmt.Errorf( "could not parse return value")
 	}
-	_, _ = fmt.Fprintf(w, string(ret))
+	return ret, nil
+}
+
+func getStandings(division string) ([]byte, error){
+	return nil, nil
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -12,10 +13,32 @@ import (
 
 var (
 	toornament = "https://api.toornament.com"
+	seasonId = os.Getenv("SEASON_ID")
+	toornamentApiKey = os.Getenv("TOORNAMENT_API_KEY")
 )
 
-func (p *Player) GetValues() *Player {
-	return p
+func toornamentRest(subPath string, rangeString string) ([]byte, error){
+	apiUrl := fmt.Sprintf("%s/%s",toornament, subPath)
+
+	request, err := http.NewRequest("GET", apiUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("X-Api-Key", toornamentApiKey)
+	request.Header.Set("Range", rangeString)
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 && resp.StatusCode != 206 {
+		return nil, fmt.Errorf("Statuscode: %d, message: %s", resp.StatusCode, resp.Status)
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 func getParticipantsToornament() ([]Team, error) {
@@ -23,10 +46,7 @@ func getParticipantsToornament() ([]Team, error) {
 	rangeMin := 0
 	rangeMax := 49
 
-	// Get SeasonId + apiKey from env variables
-	seasonId := os.Getenv("SEASON_ID")
-	toornamentApiKey := os.Getenv("TOORNAMENT_API_KEY")
-
+	// if SeasonID or ToornamentApiKey is empty fail
 	if seasonId == "" || toornamentApiKey == "" {
 		return teams,
 		fmt.Errorf("SEASON_ID (%s) is empty or TOORNAMENT_API_KEY (%s) is empty", seasonId, toornamentApiKey)
@@ -90,9 +110,25 @@ func GetParticipant(teamName string) (Team, error){
 
 	for _, t := range teams{
 		if t.Name == teamName {
+			t.matches()
 			return t, nil
 		}
 	}
 
 	return Team{}, fmt.Errorf("could not find the team")
+}
+
+
+func (t *Team) matches(){
+	var matches Matches
+	subPath := fmt.Sprintf(
+		"viewer/v2/tournaments/%s/matches?participant_ids=%s", seasonId, t.Id)
+	rangeString := "matches=0-50"
+	data, err := toornamentRest(subPath, rangeString)
+	if err != nil {
+		log.Fatalf("could not get next games: %s", err)
+		panic("something went wrong")
+	}
+	_ = json.Unmarshal(data, &matches)
+	t.Matches = matches
 }
