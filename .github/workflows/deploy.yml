@@ -1,9 +1,9 @@
-name: Cloud Run Rod-Bot Deploy
+name: CSGO Toornament Cloud Functiosn
 
 on:
   push:
     branches:
-      - "master"
+      - 'master'
 
 jobs:
   deploy:
