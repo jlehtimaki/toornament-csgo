@@ -3,7 +3,7 @@ name: CSGO Toornament Cloud Functiosn
 on:
   push:
     branches:
-      - 'master'
+      - "master"
 
 jobs:
   deploy:
