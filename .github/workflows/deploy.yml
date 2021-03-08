@@ -6,7 +6,7 @@ on:
       - 'master'
 
 jobs:
-  deploy:
+  build:
     steps:
       - uses: actions/checkout@v2
       - id: deploy
