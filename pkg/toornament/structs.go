@@ -73,3 +73,34 @@ type Match struct {
 		} `json:"participant"`
 	} `json:"opponents"`
 }
+
+type Standings  []Division
+
+type Division  struct {
+	ID          string `json:"id"`
+	GroupID     string `json:"group_id"`
+	Number      int    `json:"number"`
+	Position    int    `json:"position"`
+	Rank        int    `json:"rank"`
+	Participant struct {
+		ID           string `json:"id"`
+		Name         string `json:"name"`
+		CustomFields struct {} `json:"custom_fields"`
+	} `json:"participant"`
+	Points     int `json:"points"`
+	Properties struct {
+		Wins            int `json:"wins"`
+		Draws           int `json:"draws"`
+		Losses          int `json:"losses"`
+		Played          int `json:"played"`
+		Forfeits        int `json:"forfeits"`
+		ScoreFor        int `json:"score_for"`
+		ScoreAgainst    int `json:"score_against"`
+		ScoreDifference int `json:"score_difference"`
+	} `json:"properties"`
+}
+
+type Stages	[]struct{
+	ID		string	`json:"id"`
+	Name	string	`json:"name"`
+}

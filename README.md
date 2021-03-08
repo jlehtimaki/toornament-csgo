@@ -8,7 +8,7 @@ This fuction expects the payload to have two values `type` and `value`
 | Type          | Values        | Description           |
 |------         |:---------:    |---------------------- |
 |team           | Team Name     | Gets data of the team |
-|standings      | Division name | Gets the standings    |
+|standings      | Division name | Gets the standings either based on Division name or Team name   |
 
 ### Environment variables
 Function also requires certain environment variables to be able to fetch data

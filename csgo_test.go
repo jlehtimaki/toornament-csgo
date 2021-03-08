@@ -2,20 +2,49 @@ package CSGO
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/jlehtimaki/toornament-csgo/pkg/toornament"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-func TestIntegrationCSGOFunction(t *testing.T){
+//func TestIntegrationCSGOFunction(t *testing.T){
+//	payload := strings.NewReader(`
+//{
+//	"type": "team",
+//	"value": "Polar Squad"
+//}`)
+//	req := httptest.NewRequest("GET", "/", payload)
+//	w := httptest.NewRecorder()
+//	CSGO(w, req)
+//
+//	resp := w.Result()
+//	body, _ := ioutil.ReadAll(resp.Body)
+//
+//	if resp.StatusCode != 200 {
+//		log.Fatal("Something went wrong")
+//	}
+//
+//	var team toornament.Team
+//	err := json.Unmarshal(body, &team)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	jsonData, err := json.Marshal(team)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	fmt.Println(string(jsonData))
+//}
+
+func TestStandingsIntegration(t *testing.T){
 	payload := strings.NewReader(`
 {
-	"type": "team",
-	"value": "Polar Squad"
+	"type": "standings",
+	"value": "4.Div"
 }`)
 	req := httptest.NewRequest("GET", "/", payload)
 	w := httptest.NewRecorder()
@@ -28,15 +57,15 @@ func TestIntegrationCSGOFunction(t *testing.T){
 		log.Fatal("Something went wrong")
 	}
 
-	var team toornament.Team
-	err := json.Unmarshal(body, &team)
+	var standings toornament.Standings
+	err := json.Unmarshal(body, &standings)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	jsonData, err := json.Marshal(team)
+	_, err = json.Marshal(standings)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(jsonData))
+	//fmt.Println(string(jsonData))
 }

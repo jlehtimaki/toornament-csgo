@@ -33,7 +33,7 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 			panic("error occured while getting team information")
 		}
 	} else if d.Type == "standings" {
-		ret, err = getStandings(d.Value)
+		ret, err = t.GetStandings(d.Value)
 		if err != nil {
 			log.Fatal(err)
 			panic("error occured while getting standings")
@@ -60,8 +60,4 @@ func getTeam(teamName string) ([]byte, error){
 		return nil, fmt.Errorf( "could not parse return value")
 	}
 	return ret, nil
-}
-
-func getStandings(division string) ([]byte, error){
-	return nil, nil
 }
