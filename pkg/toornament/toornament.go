@@ -28,7 +28,7 @@ func toornamentRest(subPath string, rangeString string) ([]byte, error){
 		return nil, err
 	}
 	if resp.StatusCode != 200 && resp.StatusCode != 206 {
-		return nil, fmt.Errorf("Statuscode: %d, message: %s", resp.StatusCode, resp.Status)
+		return nil, fmt.Errorf("statuscode: %d, message: %s", resp.StatusCode, resp.Status)
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if string(data) == "[]" {

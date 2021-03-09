@@ -38,13 +38,37 @@ func GetStandings(s string) ([]byte, error){
 		return nil, err
 	}
 
-	//team, err := GetParticipant(s)
-	//if err == nil {
-	//	for _, stage := range stages {
-	//		stage.
-	//	}
-	//}
+	// Get standings for a team
+	team, err := GetParticipant(s)
+	if err == nil {
+		for _, stage := range stages {
+			var standings Standings
+			ret, err := getRanking(stage.ID)
+			if err != nil {
+				return nil, err
+			}
+			_ = json.Unmarshal(ret, &standings)
+			for _, div := range standings {
+				if div.Participant.Name == team.Name {
+					subUrl := fmt.Sprintf(
+						"viewer/v2/tournaments/%s/stages/%s/ranking-items?group_ids=%s",
+						seasonId,
+						stage.ID,
+						div.GroupID)
+					fmt.Println(subUrl)
+					rangeUrl := "items=0-49"
+					ret, err := toornamentRest(subUrl, rangeUrl)
+					if err != nil {
+						fmt.Println("foobar")
+						return nil, err
+					}
+					return ret, nil
+				}
+			}
+		}
+	}
 
+	// Get standings based on division name
 	for _, stage := range stages {
 		if stage.Name == s {
 			ret, err := getRanking(stage.ID)
