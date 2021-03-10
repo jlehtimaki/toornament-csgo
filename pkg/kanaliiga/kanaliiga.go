@@ -48,6 +48,7 @@ func GetData(player *s.Player) error {
 	var kanaliigaPlayer s.Kanaliiga
 	var (
 		kills int
+		assists int
 		deaths int
 		mvps	int
 		adr		float64
@@ -68,6 +69,7 @@ func GetData(player *s.Player) error {
 
 	for _, s := range kanaliigaPlayer.Stats {
 		kills = kills + s.Kills
+		assists = assists + s.Assists
 		deaths = deaths + s.Deaths
 		mvps = mvps + s.MVPs
 		adr = adr + s.ADR
@@ -77,6 +79,7 @@ func GetData(player *s.Player) error {
 	}
 
 	player.Kanaliiga.Kills = kills
+	player.Kanaliiga.Assists = assists
 	player.Kanaliiga.Deaths = deaths
 	player.Kanaliiga.MVPs = mvps
 	player.Kanaliiga.KDR = kills / deaths
