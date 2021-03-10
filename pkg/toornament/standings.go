@@ -3,10 +3,11 @@ package toornament
 import (
 	"encoding/json"
 	"fmt"
+	str "github.com/jlehtimaki/toornament-csgo/pkg/structs"
 )
 
-func getStages()(Stages, error){
-	var stages Stages
+func getStages()(str.Stages, error){
+	var stages str.Stages
 	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/stages", seasonId)
 
 	data, err := toornamentRest(subPath, "")
@@ -18,7 +19,7 @@ func getStages()(Stages, error){
 }
 
 func getRanking(stageId string) ([]byte, error) {
-	var standings Standings
+	var standings str.Standings
 	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/stages/%s/ranking-items", seasonId, stageId)
 	rangeString := "items=0-49"
 	data, err := toornamentRest(subPath, rangeString)
@@ -42,7 +43,7 @@ func GetStandings(s string) ([]byte, error){
 	team, err := GetParticipant(s)
 	if err == nil {
 		for _, stage := range stages {
-			var standings Standings
+			var standings str.Standings
 			ret, err := getRanking(stage.ID)
 			if err != nil {
 				return nil, err

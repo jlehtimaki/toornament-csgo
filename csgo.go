@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	f "github.com/jlehtimaki/toornament-csgo/pkg/faceit"
+	k "github.com/jlehtimaki/toornament-csgo/pkg/kanaliiga"
 	t "github.com/jlehtimaki/toornament-csgo/pkg/toornament"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -51,6 +52,10 @@ func getTeam(teamName string) ([]byte, error){
 	//Loop through players and get their data
 	for i, _ := range team.Players {
 		err = f.GetData(&team.Players[i])
+		if err != nil {
+			log.Warnf("%s\n", err)
+		}
+		err = k.GetData(&team.Players[i])
 		if err != nil {
 			log.Warnf("%s\n", err)
 		}

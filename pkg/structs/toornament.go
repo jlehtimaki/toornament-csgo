@@ -1,13 +1,15 @@
-package toornament
+package structs
 
-import "time"
+import (
+	"time"
+)
 
 type Team struct {
-	Id				string	`json:"id"`
-	Name			string	`json:"name"`
-	Players			[]Player `json:"lineup"`
-	Matches			Matches
-	CustomFields	struct{
+	Id           string   `json:"id"`
+	Name         string   `json:"name"`
+	Players      []Player `json:"lineup"`
+	Matches      Matches
+	CustomFields struct{
 		CaptainDiscord			string	`json:"kapteenin_discord_nick"`
 		ReserveCaptainDiscord	string	`json:"varakapteenin_discord"`
 	} `json:"custom_fields"`
@@ -22,20 +24,21 @@ type Player struct {
 		Rank		string
 	}
 	Faceit			struct{
-		Id			string
-		Rank		int
-		Elo			int
-		Url			string
-		Avatar		string
-		MostPlayedMap	Map
-		LeastPlayedMap	Map
-		Weapon		string
-		KD			string
-		HSP			string
+		Id             string
+		Rank           int
+		Elo            int
+		Url            string
+		Avatar         string
+		MostPlayedMap  Map
+		LeastPlayedMap Map
+		Weapon         string
+		KD             string
+		HSP            string
 	}
 	Esportal		struct{
 		Rank		string
 	}
+	Kanaliiga	KanaliigaStat
 }
 
 type Map struct {

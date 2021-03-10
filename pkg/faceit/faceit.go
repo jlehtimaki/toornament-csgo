@@ -3,7 +3,7 @@ package faceit
 import (
 	"encoding/json"
 	"fmt"
-	t "github.com/jlehtimaki/toornament-csgo/pkg/toornament"
+	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -39,8 +39,8 @@ func faceItRest(subPath string) ([]byte, int, error) {
 	return data,response.StatusCode, nil
 }
 
-func GetData(player *t.Player) error{
-	var faceitPlayer Player
+func GetData(player *s.Player) error{
+	var faceitPlayer s.FaceitPlayer
 	subPath := fmt.Sprintf("players?game=csgo&game_player_id=%s", player.CustomFields.SteamId)
 	data, statusCode, err := faceItRest(subPath)
 	if err != nil {
@@ -64,8 +64,8 @@ func GetData(player *t.Player) error{
 	return nil
 }
 
-func getStats(player *t.Player) error {
-	var stats Stats
+func getStats(player *s.Player) error {
+	var stats s.Stats
 	subPath := fmt.Sprintf("players/%s/stats/csgo", player.Faceit.Id)
 	data, statusCode, err := faceItRest(subPath)
 	if statusCode != 200 || err != nil{

@@ -2,7 +2,8 @@ package CSGO
 
 import (
 	"encoding/json"
-	"github.com/jlehtimaki/toornament-csgo/pkg/toornament"
+	"fmt"
+	"github.com/jlehtimaki/toornament-csgo/pkg/structs"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http/httptest"
@@ -24,20 +25,20 @@ func TestIntegrationCSGOFunction(t *testing.T){
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode != 200 {
-		log.Fatal("Something went wrong")
+		log.Fatalf("Something went wrong: %d message: %s", resp.StatusCode, resp.Status)
 	}
 
-	var team toornament.Team
+	var team structs.Team
 	err := json.Unmarshal(body, &team)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = json.Marshal(team)
+	jsonData, err := json.Marshal(team)
 	if err != nil {
 		log.Fatal(err)
 	}
-	//fmt.Println(string(jsonData))
+	fmt.Println(string(jsonData))
 }
 
 func TestStandingsIntegration(t *testing.T){
@@ -57,7 +58,7 @@ func TestStandingsIntegration(t *testing.T){
 		log.Fatal("Something went wrong")
 	}
 
-	var standings toornament.Standings
+	var standings structs.Standings
 	err := json.Unmarshal(body, &standings)
 	if err != nil {
 		log.Fatal(err)
