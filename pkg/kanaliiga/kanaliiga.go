@@ -76,9 +76,10 @@ func GetData(player *s.Player) error {
 		kanarating = kanarating + s.KanaRating
 	}
 
-	player.Kanaliiga.Kills = kills / len(kanaliigaPlayer.Stats)
-	player.Kanaliiga.Deaths = deaths / len(kanaliigaPlayer.Stats)
-	player.Kanaliiga.MVPs = mvps / len(kanaliigaPlayer.Stats)
+	player.Kanaliiga.Kills = kills
+	player.Kanaliiga.Deaths = deaths
+	player.Kanaliiga.MVPs = mvps
+	player.Kanaliiga.KDR = kills / deaths
 	player.Kanaliiga.ADR = adr / float64(len(kanaliigaPlayer.Stats))
 	player.Kanaliiga.HsPercent = hsp / len(kanaliigaPlayer.Stats)
 	player.Kanaliiga.KAST = kast / len(kanaliigaPlayer.Stats)

@@ -9,6 +9,7 @@ type KanaliigaStat struct {
 	Deaths            int     `json:"Deaths"`
 	Assists           int     `json:"Assists"`
 	MVPs              int     `json:"MVPs"`
+	KDR				  int
 	ADR               float64 `json:"ADR"`
 	HsPercent         int     `json:"hsPercent"`
 	KAST              int     `json:"KAST"`
