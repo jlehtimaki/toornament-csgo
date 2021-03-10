@@ -77,6 +77,9 @@ func getStats(player *t.Player) error {
 	mostPlayed := stats.Maps[0]
 	leastPlayed := stats.Maps[0]
 	for _, m := range stats.Maps {
+		if m.Mode != "5v5" {
+			continue
+		}
 		mInt, _ := strconv.Atoi(m.Stats.Matches)
 		mostInt, _ := strconv.Atoi(mostPlayed.Stats.Matches)
 		leastInt, _ := strconv.Atoi(leastPlayed.Stats.Matches)
@@ -89,8 +92,8 @@ func getStats(player *t.Player) error {
 	}
 
 	// Save data to player object
-	player.Faceit.KD = stats.Overall.KD
-	player.Faceit.HSP = stats.Overall.HSP
+	player.Faceit.KD = stats.Overall.AverageKDRatio
+	player.Faceit.HSP = stats.Overall.AverageHeadshots
 	// Save MostPlayedMap data
 	player.Faceit.MostPlayedMap.Name = mostPlayed.Name
 	player.Faceit.MostPlayedMap.Matches, _ = strconv.Atoi(mostPlayed.Stats.Matches)

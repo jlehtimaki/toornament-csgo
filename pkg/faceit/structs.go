@@ -16,9 +16,16 @@ type Player struct {
 
 type Stats struct {
 	Overall	struct{
-		HSP		string	`json:"Average Headshot %"`
-		KD		string	`json:"Average K/D Ratio"`
-	}`json:"lifetime"`
+		AverageKDRatio   string   `json:"Average K/D Ratio"`
+		TotalHeadshots   string   `json:"Total Headshots %"`
+		LongestWinStreak string   `json:"Longest Win Streak"`
+		Wins             string   `json:"Wins"`
+		Matches          string   `json:"Matches"`
+		AverageHeadshots string   `json:"Average Headshots %"`
+		CurrentWinStreak string   `json:"Current Win Streak"`
+		KDRatio          string   `json:"K/D Ratio"`
+		WinRate          string   `json:"Win Rate %"`
+	} `json:"lifetime"`
 	Maps		[]Map	`json:"segments"`
 }
 
@@ -31,4 +38,5 @@ type Map struct {
 	Name	string	`json:"label"`
 	Image	string	`json:"img_small"`
 	Type	string	`json:"type"`
+	Mode	string	`json:"mode"`
 }
