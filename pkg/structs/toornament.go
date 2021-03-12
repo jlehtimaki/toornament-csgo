@@ -8,6 +8,8 @@ type Team struct {
 	Id           string   `json:"id"`
 	Name         string   `json:"name"`
 	Players      []Player `json:"lineup"`
+	BestMap		 Map
+	WorstMap	 Map
 	Matches      Matches
 	CustomFields struct{
 		CaptainDiscord			string	`json:"kapteenin_discord_nick"`

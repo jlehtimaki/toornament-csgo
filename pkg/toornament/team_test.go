@@ -7,7 +7,7 @@ import (
 )
 
 func TestIntegrationParticipantGetTeam(t *testing.T) {
-	team, err := GetParticipant("Polar Squad")
+	team, err := GetTeam("Polar Squad")
 	if err != nil {
 		log.Fatal(err)
 	}

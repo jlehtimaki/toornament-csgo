@@ -9,7 +9,7 @@ import (
 )
 
 
-func GetParticipant(teamName string) (s.Team, error){
+func GetTeam(teamName string) (s.Team, error){
 	// First get all teams and get the ID of the team
 	var teams []s.Team
 	teamName = strings.ReplaceAll(teamName, " ", "+")

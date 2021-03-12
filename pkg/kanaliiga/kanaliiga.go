@@ -67,26 +67,28 @@ func GetData(player *s.Player) error {
 		return err
 	}
 
-	for _, s := range kanaliigaPlayer.Stats {
-		kills = kills + s.Kills
-		assists = assists + s.Assists
-		deaths = deaths + s.Deaths
-		mvps = mvps + s.MVPs
-		adr = adr + s.ADR
-		hsp = hsp + s.HsPercent
-		kast = kast + s.KAST
-		kanarating = kanarating + s.KanaRating
-	}
+	if len(kanaliigaPlayer.Stats) > 0 {
+		for _, s := range kanaliigaPlayer.Stats {
+			kills = kills + s.Kills
+			assists = assists + s.Assists
+			deaths = deaths + s.Deaths
+			mvps = mvps + s.MVPs
+			adr = adr + s.ADR
+			hsp = hsp + s.HsPercent
+			kast = kast + s.KAST
+			kanarating = kanarating + s.KanaRating
+		}
 
-	player.Kanaliiga.Kills = kills
-	player.Kanaliiga.Assists = assists
-	player.Kanaliiga.Deaths = deaths
-	player.Kanaliiga.MVPs = mvps
-	player.Kanaliiga.KDR = kills / deaths
-	player.Kanaliiga.ADR = adr / float64(len(kanaliigaPlayer.Stats))
-	player.Kanaliiga.HsPercent = hsp / len(kanaliigaPlayer.Stats)
-	player.Kanaliiga.KAST = kast / len(kanaliigaPlayer.Stats)
-	player.Kanaliiga.KanaRating = kanarating / float64(len(kanaliigaPlayer.Stats))
+		player.Kanaliiga.Kills = kills
+		player.Kanaliiga.Assists = assists
+		player.Kanaliiga.Deaths = deaths
+		player.Kanaliiga.MVPs = mvps
+		player.Kanaliiga.KDR = kills / deaths
+		player.Kanaliiga.ADR = adr / float64(len(kanaliigaPlayer.Stats))
+		player.Kanaliiga.HsPercent = hsp / len(kanaliigaPlayer.Stats)
+		player.Kanaliiga.KAST = kast / len(kanaliigaPlayer.Stats)
+		player.Kanaliiga.KanaRating = kanarating / float64(len(kanaliigaPlayer.Stats))
+	}
 
 	return nil
 }

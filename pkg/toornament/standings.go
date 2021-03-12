@@ -40,7 +40,7 @@ func GetStandings(s string) ([]byte, error){
 	}
 
 	// Get standings for a team
-	team, err := GetParticipant(s)
+	team, err := GetTeam(s)
 	if err == nil {
 		for _, stage := range stages {
 			var standings str.Standings

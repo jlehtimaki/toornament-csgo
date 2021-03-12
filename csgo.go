@@ -45,7 +45,7 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 
 func getTeam(teamName string) ([]byte, error){
 	// Get information about the team
-	team, err := t.GetParticipant(teamName)
+	team, err := t.GetTeam(teamName)
 	if err != nil {
 		return nil, err
 	}
