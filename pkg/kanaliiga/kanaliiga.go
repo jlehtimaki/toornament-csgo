@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 var (
@@ -29,6 +30,7 @@ func restCall(subPath string) ([]byte, error){
 	}
 	client := &http.Client{
 		Transport: tr,
+		Timeout: 5 * time.Second,
 	}
 	response, err := client.Do(request)
 	if err != nil {
