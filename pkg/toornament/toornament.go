@@ -16,6 +16,10 @@ var (
 func toornamentRest(subPath string, rangeString string) ([]byte, error){
 	apiUrl := fmt.Sprintf("%s/%s",toornament, subPath)
 
+	if toornamentApiKey == "" {
+		return nil, fmt.Errorf("could not find TOORNAMENT_API_KEY")
+	}
+
 	request, err := http.NewRequest("GET", apiUrl, nil)
 	if err != nil {
 		return nil, err
