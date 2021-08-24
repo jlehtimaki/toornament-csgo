@@ -46,7 +46,7 @@ func GetData(player *s.Player) error{
 	if err != nil {
 		return err
 	}
-	if statusCode == 404 {
+	if statusCode == 404 || statusCode == 400 {
 			return fmt.Errorf("could not find user: %s", player.Name)
 	}
 	_ = json.Unmarshal(data, &faceitPlayer)
