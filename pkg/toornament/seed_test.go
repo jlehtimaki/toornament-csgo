@@ -7,7 +7,7 @@ import (
 )
 
 func TestIntegrationGetGroups(t *testing.T) {
-	data, err := getGroups()
+	data, err := GetSeed()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -109,3 +109,13 @@ type Stages	[]struct{
 	ID		string	`json:"id"`
 	Name	string	`json:"name"`
 }
+
+type SeedTeam struct {
+	Name	string
+	Seed	int
+	PlacementInGroup int
+	Points	int
+	PlusMinus int
+	Wins	int
+	GroupID	string
+}
