@@ -1,7 +1,6 @@
 package toornament
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"testing"
 )
@@ -11,5 +10,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(data)
+	if data == nil {
+		log.Fatal("data was empty")
+	}
 }
