@@ -22,18 +22,26 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 		log.Errorf( "wrong type of payload")
 		panic("error occured, check logs")
 	}
-	if d.Type == "" || d.Value == "" {
-		log.Errorf("either value or type is empty")
+	if d.Type == "" {
+		log.Errorf("type is empty")
 		panic("error occured, check logs")
 	}
 
 	if d.Type == "team" {
+		if d.Value == "" {
+			log.Errorf("value is empty")
+			panic("error occured, check logs")
+		}
 		ret, err = getTeam(d.Value)
 		if err != nil {
 			log.Fatal(err)
 			panic("error occured while getting team information")
 		}
 	} else if d.Type == "standings" {
+		if d.Value == "" {
+			log.Errorf("value is empty")
+			panic("error occured, check logs")
+		}
 		ret, err = t.GetStandings(d.Value)
 		if err != nil {
 			log.Fatal(err)
