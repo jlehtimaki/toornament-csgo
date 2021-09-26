@@ -48,6 +48,7 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 			panic("error occured while getting standings")
 		}
 	} else if d.Type == "seed" {
+		log.Info("getting seeds")
 		ret, err = t.GetSeed()
 		if err != nil {
 			log.Fatal(err)
