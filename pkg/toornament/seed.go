@@ -72,7 +72,6 @@ func orderTeams(teams []structs.Division) ([]structs.SeedTeam, error) {
 		seedTeams = append(seedTeams, s)
 
 	}
-
 	return seedTeams, nil
 }
 
@@ -80,19 +79,22 @@ func orderTeam(team structs.SeedTeam, seedTeams []structs.SeedTeam) []structs.Se
 	for n, st := range seedTeams {
 		if st.Points == team.Points {
 			if st.PlusMinus < team.PlusMinus {
-				tmpT := seedTeams[n]
-				seedTeams[n] = team
-				seedTeams = append(seedTeams, tmpT)
-				return seedTeams
+				return insert(seedTeams, n, team)
 			}
 		}
 		if st.Points < team.Points {
-			tmpT := seedTeams[n]
-			seedTeams[n] = team
-			seedTeams = append(seedTeams, tmpT)
-			return seedTeams
+			return insert(seedTeams, n, team)
 		}
 	}
 	seedTeams = append(seedTeams, team)
 	return seedTeams
+}
+
+func insert(s []structs.SeedTeam, index int, team structs.SeedTeam) []structs.SeedTeam {
+	if len(s) == index { // nil or empty slice or after last element
+		return append(s, team)
+	}
+	s = append(s[:index+1], s[index:]...) // index < len(a)
+	s[index] = team
+	return s
 }
