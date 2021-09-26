@@ -5,32 +5,38 @@ import (
 	"fmt"
 	"github.com/jlehtimaki/toornament-csgo/pkg/structs"
 	"sort"
+	"strings"
 )
 
 func GetSeed() ([]byte, error) {
 	seed := map[string][]structs.SeedTeam{}
-	//stages, err := getStages()
-	//if err != nil { return nil, err }
+	stages, err := getStages()
+	if err != nil { return nil, err }
 
-	standing,_ := GetStandings("3.Div")
-
-
-	var standings structs.Standings
-	err := json.Unmarshal(standing, &standings)
-	if err != nil { return nil, err}
-
-	var teams []structs.Division
-	for _, s := range standings {
-		if s.Position <= 4 {
-			teams = append(teams, s)
+	for _, stage := range stages {
+		if strings.Contains(stage.Name, "layoffs") {
+			continue
 		}
+		fmt.Println(stage.Name)
+		standing,_ := GetStandings(stage.Name)
+		var standings structs.Standings
+		err := json.Unmarshal(standing, &standings)
+		if err != nil { return nil, err}
+
+		var teams []structs.Division
+		for _, s := range standings {
+			if s.Position <= 4 {
+				teams = append(teams, s)
+			}
+		}
+
+		f, err := orderTeams(teams)
+		if err != nil { return nil, nil}
+
+		seed[stage.Name] = f
+
 	}
-
-	f, err := orderTeams(teams)
-	if err != nil { return nil, nil}
-
-	seed["2.Div"] = f
-
+	fmt.Println(seed)
 	b, err := json.MarshalIndent(seed, "", "  ")
 	if err != nil {
 		fmt.Println(err)
