@@ -18,7 +18,7 @@ jobs:
         uses: google-github-actions/deploy-cloud-functions@main
         with:
           name: CSGO
-          runtime: go115
+          runtime: go116
           region: europe-west1
           env_vars: FACEIT_API_KEY=${{ secrets.FACEIT_API_KEY }},TOORNAMENT_API_KEY=${{ secrets.TOORNAMENT_API_KEY }},SEASON_ID=${{ secrets.TOORNAMENT_SEASON_ID }},KANALIIGA_TOKEN=${{ secrets.KANALIIGA_TOKEN }}
           credentials: ${{ secrets.GCP_SA_KEY }}
