@@ -73,7 +73,7 @@ func orderTeams(teams []structs.Division) ([]structs.SeedTeam, error) {
 		return teams[i].Position < teams[j].Position
 	})
 
-	for n, t := range teams {
+	for _, t := range teams {
 		s := structs.SeedTeam{
 			Name:             t.Participant.Name,
 			PlacementInGroup: t.Position,
@@ -88,13 +88,7 @@ func orderTeams(teams []structs.Division) ([]structs.SeedTeam, error) {
 			seedTeams = append(seedTeams, s)
 			continue
 		}
-
-		if teams[n-1].Position == s.PlacementInGroup {
-			seedTeams = orderTeam(s, seedTeams)
-			continue
-		}
-
-		seedTeams = append(seedTeams, s)
+		seedTeams = orderTeam(s, seedTeams)
 	}
 
 	// Set correct seed
@@ -107,18 +101,20 @@ func orderTeams(teams []structs.Division) ([]structs.SeedTeam, error) {
 
 func orderTeam(team structs.SeedTeam, seedTeams []structs.SeedTeam) []structs.SeedTeam {
 	for n, st := range seedTeams {
-		if st.Points == team.Points {
-			if st.PlusMinus < team.PlusMinus {
-				return insert(seedTeams, n, team)
-			}
-			if st.PlusMinus == team.PlusMinus {
-				if st.Wins < team.Wins {
+		if st.PlacementInGroup == team.PlacementInGroup {
+			if st.Points == team.Points {
+				if st.PlusMinus < team.PlusMinus {
 					return insert(seedTeams, n, team)
 				}
+				if st.PlusMinus == team.PlusMinus {
+					if st.Wins < team.Wins {
+						return insert(seedTeams, n, team)
+					}
+				}
 			}
-		}
-		if st.Points < team.Points {
-			return insert(seedTeams, n, team)
+			if st.Points < team.Points {
+				return insert(seedTeams, n, team)
+			}
 		}
 	}
 	team.Seed = len(seedTeams) + 1
