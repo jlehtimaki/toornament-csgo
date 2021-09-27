@@ -5,8 +5,18 @@ import (
 	"testing"
 )
 
-func TestIntegrationGetGroups(t *testing.T) {
-	data, err := GetSeed()
+func TestIntegrationGetAllSeeds(t *testing.T) {
+	data, err := GetSeed("")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if data == nil {
+		log.Fatal("data was empty")
+	}
+}
+
+func TestIntegrationGetSeed(t *testing.T) {
+	data, err := GetSeed("2.Div")
 	if err != nil {
 		log.Fatal(err)
 	}

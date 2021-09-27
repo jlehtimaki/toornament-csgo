@@ -49,7 +49,7 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if d.Type == "seed" {
 		log.Info("getting seeds")
-		ret, err = t.GetSeed()
+		ret, err = t.GetSeed("")
 		if err != nil {
 			log.Fatal(err)
 			panic("error occured while getting seeding list")

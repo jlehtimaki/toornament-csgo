@@ -9,7 +9,7 @@ This fuction expects the payload to have two values `type` and `value`
 |------         |:---------:    |---------------------- |
 |team           | Team Name     | Gets data of the team |
 |standings      | Division name | Gets the standings either based on Division name or Team name   |
-|seed           | -             | Get the current seed of the tournament
+|seed           | Empty for all Divs or Div name for specific             | Get the current seed of the tournament
 
 ### Environment variables
 Function also requires certain environment variables to be able to fetch data
