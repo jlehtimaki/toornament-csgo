@@ -65,7 +65,7 @@ func getTeam(teamName string) ([]byte, error){
 		return nil, err
 	}
 	//Loop through players and get their data
-	for i, _ := range team.Players {
+	for i := range team.Players {
 		err = f.GetData(&team.Players[i])
 		if err != nil {
 			log.Warnf("%s\n", err)

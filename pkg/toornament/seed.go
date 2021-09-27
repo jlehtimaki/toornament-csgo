@@ -92,7 +92,7 @@ func orderTeams(teams []structs.Division) ([]structs.SeedTeam, error) {
 	}
 
 	// Set correct seed
-	for n, _ := range seedTeams {
+	for n := range seedTeams {
 		seedTeams[n].Seed = n + 1
 	}
 
