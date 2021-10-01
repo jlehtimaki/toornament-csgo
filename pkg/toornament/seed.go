@@ -10,14 +10,24 @@ import (
 
 // Get the current seed based on rankings in all divisions
 func GetSeed(div string) ([]byte, error) {
-	seed := map[string][]structs.SeedTeam{}
+	seed := map[string]map[string][]structs.SeedTeam{}
+	seed["playoffs"] = map[string][]structs.SeedTeam{}
+	seed["pityplayoffs"] = map[string][]structs.SeedTeam{}
 
 	if div != "" {
-		seeding, err := getStandings(div)
+		// Normal playoffs
+		// Set the division and it's seeding to the JSON
+		seeding, err := getStandings(div, false)
 		if err != nil {return nil, err}
 
+		seed["playoffs"][div] = seeding
+
+		// Petty playoffs
 		// Set the division and it's seeding to the JSON
-		seed[div] = seeding
+		seeding, err = getStandings(div, true)
+		if err != nil {return nil, err}
+
+		seed["pityplayoffs"][div] = seeding
 	} else {
 		// Get stages i.e. Divisions
 		stages, err := getStages()
@@ -29,14 +39,22 @@ func GetSeed(div string) ([]byte, error) {
 				continue
 			}
 
-			seeding, err := getStandings(stage.Name)
+			// Normal playoffs
+			seeding, err := getStandings(stage.Name, false)
 			if err != nil {return nil, err}
 
 			// Set the division and it's seeding to the JSON
-			seed[stage.Name] = seeding
+			seed["playoffs"][stage.Name] = seeding
+
+			// Pitty playoffs
+			seeding, err = getStandings(stage.Name, true)
+			if err != nil {return nil, err}
+
+			// Set the division and it's seeding to the JSON
+			seed["pityplayoffs"][stage.Name] = seeding
 		}
 	}
-	// Pretify the JSON struct
+	// Prettify the JSON struct
 	b, err := json.MarshalIndent(seed, "", "  ")
 	if err != nil {
 		fmt.Println(err)
@@ -45,21 +63,27 @@ func GetSeed(div string) ([]byte, error) {
 	return b, nil
 }
 
-func getStandings(div string) ([]structs.SeedTeam, error){
+func getStandings(div string, pity bool) ([]structs.SeedTeam, error){
 	// Get the current standings for group in division
 	data,_ := GetStandings(div)
 	var standings structs.Standings
 	err := json.Unmarshal(data, &standings)
 	if err != nil { return nil, err}
 
+	fmt.Printf("doing pity: %t \n", pity)
 	// Get all teams that are 4th or upper in the group
 	var teams []structs.Division
 	for _, s := range standings {
-		if s.Position <= 4 {
-			teams = append(teams, s)
+		if pity {
+			if s.Position > 4 {
+				teams = append(teams, s)
+			}
+		} else {
+			if s.Position <= 4 {
+				teams = append(teams, s)
+			}
 		}
 	}
-
 	// Order the teams
 	seeds, err := orderTeams(teams)
 	if err != nil { return nil, nil}
