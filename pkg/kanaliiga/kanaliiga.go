@@ -12,15 +12,15 @@ import (
 )
 
 var (
-	kanaliigaApi = "https://tilastot.kanaliiga.fi:8443"
+	kanaliigaApi   = "https://Jha.kanaliiga.fi:8443"
 	kanaliigaToken = os.Getenv("KANALIIGA_TOKEN")
 )
 
-func restCall(subPath string) ([]byte, error){
+func restCall(subPath string) ([]byte, error) {
 	if kanaliigaToken == "" {
 		return nil, fmt.Errorf("KANALIIGA_TOKEN is missing")
 	}
-	apiUrl := fmt.Sprintf("%s/%s?token=%s", kanaliigaApi, subPath,kanaliigaToken)
+	apiUrl := fmt.Sprintf("%s/%s?token=%s", kanaliigaApi, subPath, kanaliigaToken)
 	request, err := http.NewRequest("GET", apiUrl, nil)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func restCall(subPath string) ([]byte, error){
 	}
 	client := &http.Client{
 		Transport: tr,
-		Timeout: 5 * time.Second,
+		Timeout:   5 * time.Second,
 	}
 	response, err := client.Do(request)
 	if err != nil {
@@ -49,13 +49,13 @@ func restCall(subPath string) ([]byte, error){
 func GetData(player *s.Player) error {
 	var kanaliigaPlayer s.Kanaliiga
 	var (
-		kills int
-		assists int
-		deaths int
-		mvps	int
-		adr		float64
-		hsp		int
-		kast	int
+		kills      int
+		assists    int
+		deaths     int
+		mvps       int
+		adr        float64
+		hsp        int
+		kast       int
 		kanarating float64
 	)
 

@@ -15,11 +15,11 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 	var ret []byte
 	var err error
 	var d struct {
-		Type string `json:"type"`
+		Type  string `json:"type"`
 		Value string `json:"value"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
-		log.Errorf( "wrong type of payload")
+		log.Errorf("wrong type of payload")
 		panic("error occured, check logs")
 	}
 	if d.Type == "" {
@@ -47,6 +47,16 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 			panic("error occured while getting standings")
 		}
+	} else if d.Type == "next-match" {
+		if d.Value == "" {
+			log.Fatal("error occured, value empty")
+		}
+		log.Info("getting next match for %s", d.Value)
+		ret, err = t.NextMatch(d.Value)
+		if err != nil {
+			log.Fatal(err)
+			panic("error occured while getting the next match")
+		}
 	} else if d.Type == "seed" {
 		log.Info("getting seeds")
 		if d.Value != "" {
@@ -62,7 +72,7 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprintf(w, string(ret))
 }
 
-func getTeam(teamName string) ([]byte, error){
+func getTeam(teamName string) ([]byte, error) {
 	// Get information about the team
 	team, err := t.GetTeam(teamName)
 	if err != nil {
@@ -81,7 +91,7 @@ func getTeam(teamName string) ([]byte, error){
 	}
 	ret, err := json.Marshal(team)
 	if err != nil {
-		return nil, fmt.Errorf( "could not parse return value")
+		return nil, fmt.Errorf("could not parse return value")
 	}
 	return ret, nil
 }

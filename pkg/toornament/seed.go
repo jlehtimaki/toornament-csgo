@@ -18,20 +18,26 @@ func GetSeed(div string) ([]byte, error) {
 		// Normal playoffs
 		// Set the division and it's seeding to the JSON
 		seeding, err := getStandings(div, false)
-		if err != nil {return nil, err}
+		if err != nil {
+			return nil, err
+		}
 
 		seed["playoffs"][div] = seeding
 
 		// Petty playoffs
 		// Set the division and it's seeding to the JSON
 		seeding, err = getStandings(div, true)
-		if err != nil {return nil, err}
+		if err != nil {
+			return nil, err
+		}
 
 		seed["pityplayoffs"][div] = seeding
 	} else {
 		// Get stages i.e. Divisions
 		stages, err := getStages()
-		if err != nil { return nil, err }
+		if err != nil {
+			return nil, err
+		}
 
 		// Loop through all divisions and get calculate the seedings accordingly
 		for _, stage := range stages {
@@ -41,14 +47,18 @@ func GetSeed(div string) ([]byte, error) {
 
 			// Normal playoffs
 			seeding, err := getStandings(stage.Name, false)
-			if err != nil {return nil, err}
+			if err != nil {
+				return nil, err
+			}
 
 			// Set the division and it's seeding to the JSON
 			seed["playoffs"][stage.Name] = seeding
 
 			// Pitty playoffs
 			seeding, err = getStandings(stage.Name, true)
-			if err != nil {return nil, err}
+			if err != nil {
+				return nil, err
+			}
 
 			// Set the division and it's seeding to the JSON
 			seed["pityplayoffs"][stage.Name] = seeding
@@ -63,14 +73,16 @@ func GetSeed(div string) ([]byte, error) {
 	return b, nil
 }
 
-func getStandings(div string, pity bool) ([]structs.SeedTeam, error){
+func getStandings(div string, pity bool) ([]structs.SeedTeam, error) {
 	// Get the current standings for group in division
-	data,_ := GetStandings(div)
+	data, _ := GetStandings(div)
 	var standings structs.Standings
 	err := json.Unmarshal(data, &standings)
-	if err != nil { return nil, err}
+	if err != nil {
+		return nil, err
+	}
 
-	fmt.Printf("doing pity: %t \n", pity)
+	//fmt.Printf("doing pity: %t \n", pity)
 	// Get all teams that are 4th or upper in the group
 	var teams []structs.Division
 	for _, s := range standings {
@@ -86,7 +98,9 @@ func getStandings(div string, pity bool) ([]structs.SeedTeam, error){
 	}
 	// Order the teams
 	seeds, err := orderTeams(teams)
-	if err != nil { return nil, nil}
+	if err != nil {
+		return nil, nil
+	}
 
 	return seeds, nil
 }

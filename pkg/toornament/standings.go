@@ -6,7 +6,7 @@ import (
 	str "github.com/jlehtimaki/toornament-csgo/pkg/structs"
 )
 
-func getStages()(str.Stages, error){
+func getStages() (str.Stages, error) {
 	var stages str.Stages
 	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/stages", seasonId)
 
@@ -30,10 +30,10 @@ func getRanking(stageId string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return data,nil
+	return data, nil
 }
 
-func GetStandings(s string) ([]byte, error){
+func GetStandings(s string) ([]byte, error) {
 	stages, err := getStages()
 	if err != nil {
 		return nil, err

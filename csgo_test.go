@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestIntegrationCSGOFunction(t *testing.T){
+func TestIntegrationCSGOFunction(t *testing.T) {
 	payload := strings.NewReader(`
 {
 	"type": "team",
@@ -41,7 +41,7 @@ func TestIntegrationCSGOFunction(t *testing.T){
 	fmt.Println(string(jsonData))
 }
 
-func TestStandingsIntegration(t *testing.T){
+func TestStandingsIntegration(t *testing.T) {
 	payload := strings.NewReader(`
 {
 	"type": "standings",

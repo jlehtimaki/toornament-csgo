@@ -8,13 +8,13 @@ import (
 )
 
 var (
-	toornament = "https://api.toornament.com"
-	seasonId = os.Getenv("SEASON_ID")
+	toornament       = "https://api.toornament.com"
+	seasonId         = os.Getenv("SEASON_ID")
 	toornamentApiKey = os.Getenv("TOORNAMENT_API_KEY")
 )
 
-func toornamentRest(subPath string, rangeString string) ([]byte, error){
-	apiUrl := fmt.Sprintf("%s/%s",toornament, subPath)
+func toornamentRest(subPath string, rangeString string) ([]byte, error) {
+	apiUrl := fmt.Sprintf("%s/%s", toornament, subPath)
 
 	if toornamentApiKey == "" {
 		return nil, fmt.Errorf("could not find TOORNAMENT_API_KEY")

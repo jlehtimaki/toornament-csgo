@@ -8,12 +8,11 @@ import (
 	"strings"
 )
 
-
-func GetTeam(teamName string) (s.Team, error){
+func GetTeam(teamName string) (s.Team, error) {
 	// First get all teams and get the ID of the team
 	var teams []s.Team
 	teamName = strings.ReplaceAll(teamName, " ", "+")
-	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/participants?name=%s", seasonId,teamName)
+	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/participants?name=%s", seasonId, teamName)
 	rangeKey := "participants=0-49"
 
 	data, err := toornamentRest(subPath, rangeKey)
@@ -32,7 +31,7 @@ func GetTeam(teamName string) (s.Team, error){
 	return teams[0], nil
 }
 
-func matches(team *s.Team){
+func matches(team *s.Team) {
 	var matches s.Matches
 	subPath := fmt.Sprintf(
 		"viewer/v2/tournaments/%s/matches?participant_ids=%s", seasonId, team.Id)
