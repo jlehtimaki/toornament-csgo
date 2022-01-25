@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toornament-csgo
+  namespace: kanarod
+spec:
+  selector:
+    matchLabels:
+      app: toornament-csgo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: toornament-csgo
+    spec:
+      containers:
+        - name: toornament-csgo
+          image: quay.io/jlehtimaki/toornament-csgo
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SEASON_ID
+              value: "5161204601415041024"
+            - name: FACEIT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: faceit
+                  name: toornament-csgo
+            - name: TOORNAMENT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: toornament
+                  name: toornament-csgo
+            - name: KANALIIGA_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: kanaliiga
+                  name: toornament-csgo
+          resources:
+            limits:
+              cpu: "0.1"
+              memory: 128Mi

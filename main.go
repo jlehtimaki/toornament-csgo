@@ -1,8 +1,9 @@
-package CSGO
+package main
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	f "github.com/jlehtimaki/toornament-csgo/pkg/faceit"
 	k "github.com/jlehtimaki/toornament-csgo/pkg/kanaliiga"
 	t "github.com/jlehtimaki/toornament-csgo/pkg/toornament"
@@ -10,7 +11,15 @@ import (
 	"net/http"
 )
 
-func CSGO(w http.ResponseWriter, r *http.Request) {
+func main() {
+	router := gin.Default()
+	router.GET("/team/:id", getTeam)
+	router.GET("/standings/:id", t.GetStandings)
+	router.GET("/match/next/:id", t.NextMatch)
+	router.Run("localhost:8080")
+}
+
+func foo(w http.ResponseWriter, r *http.Request) {
 	// Payload checks
 	var ret []byte
 	var err error
@@ -27,37 +36,7 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 		panic("error occured, check logs")
 	}
 
-	if d.Type == "team" {
-		if d.Value == "" {
-			log.Errorf("value is empty")
-			panic("error occured, check logs")
-		}
-		ret, err = getTeam(d.Value)
-		if err != nil {
-			log.Fatal(err)
-			panic("error occured while getting team information")
-		}
-	} else if d.Type == "standings" {
-		if d.Value == "" {
-			log.Errorf("value is empty")
-			panic("error occured, check logs")
-		}
-		ret, err = t.GetStandings(d.Value)
-		if err != nil {
-			log.Fatal(err)
-			panic("error occured while getting standings")
-		}
-	} else if d.Type == "next-match" {
-		if d.Value == "" {
-			log.Fatal("error occured, value empty")
-		}
-		log.Info("getting next match for %s", d.Value)
-		ret, err = t.NextMatch(d.Value)
-		if err != nil {
-			log.Fatal(err)
-			panic("error occured while getting the next match")
-		}
-	} else if d.Type == "seed" {
+	if d.Type == "seed" {
 		log.Info("getting seeds")
 		if d.Value != "" {
 			ret, err = t.GetSeed(d.Value)
@@ -72,11 +51,13 @@ func CSGO(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprintf(w, string(ret))
 }
 
-func getTeam(teamName string) ([]byte, error) {
+func getTeam(c *gin.Context) {
+	teamName := c.Param("id")
 	// Get information about the team
 	team, err := t.GetTeam(teamName)
 	if err != nil {
-		return nil, err
+		log.Error(err)
+		c.IndentedJSON(http.StatusInternalServerError, err)
 	}
 	//Loop through players and get their data
 	for i := range team.Players {
@@ -89,9 +70,6 @@ func getTeam(teamName string) ([]byte, error) {
 			log.Warnf("%s\n", err)
 		}
 	}
-	ret, err := json.Marshal(team)
-	if err != nil {
-		return nil, fmt.Errorf("could not parse return value")
-	}
-	return ret, nil
+
+	c.IndentedJSON(http.StatusOK, team)
 }

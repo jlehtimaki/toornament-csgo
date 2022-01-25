@@ -75,9 +75,7 @@ func GetSeed(div string) ([]byte, error) {
 
 func getStandings(div string, pity bool) ([]structs.SeedTeam, error) {
 	// Get the current standings for group in division
-	data, _ := GetStandings(div)
-	var standings structs.Standings
-	err := json.Unmarshal(data, &standings)
+	standings, err := standings(div)
 	if err != nil {
 		return nil, err
 	}

@@ -1,28 +1,34 @@
 package toornament
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
-func NextMatch(team string) ([]byte, error) {
+func NextMatch(c *gin.Context) {
+	team := c.Param("id")
 	t, err := GetTeam(team)
 	if err != nil {
-		return nil, err
+		log.Error(err)
+		c.IndentedJSON(http.StatusInternalServerError, err)
+		return
 	}
 
 	for _, t := range t.Matches[0].Opponents {
 		if t.Participant.Name != team && t.Result == "" {
 			t2, err := GetTeam(t.Participant.Name)
 			if err != nil {
-				return nil, err
+				log.Error(err)
+				c.IndentedJSON(http.StatusInternalServerError, err)
+				return
 			}
-			b, err := json.MarshalIndent(t2, "", "  ")
-			if err != nil {
-				return nil, err
-			}
-			return b, nil
+			c.IndentedJSON(http.StatusOK, t2)
+			return
 		}
 	}
-	return nil, fmt.Errorf("something went wrong with getting next match")
+	log.Error(fmt.Errorf("something went wrong with getting next match"))
+	c.IndentedJSON(http.StatusInternalServerError, err)
+	return
 }

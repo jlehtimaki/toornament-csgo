@@ -3,7 +3,9 @@ package toornament
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	str "github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	"net/http"
 )
 
 func getStages() (str.Stages, error) {
@@ -18,7 +20,7 @@ func getStages() (str.Stages, error) {
 	return stages, nil
 }
 
-func getRanking(stageId string) ([]byte, error) {
+func getRanking(stageId string) (str.Standings, error) {
 	var standings str.Standings
 	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/stages/%s/ranking-items", seasonId, stageId)
 	rangeString := "items=0-49"
@@ -30,25 +32,34 @@ func getRanking(stageId string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return data, nil
+	return standings, nil
 }
 
-func GetStandings(s string) ([]byte, error) {
+func GetStandings(c *gin.Context) {
+	s := c.Param("id")
+	standings, err := standings(s)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, standings)
+}
+
+func standings(s string) (str.Standings, error) {
+	standings := str.Standings{}
 	stages, err := getStages()
 	if err != nil {
-		return nil, err
+		return standings, err
 	}
 
 	// Get standings for a team
 	team, err := GetTeam(s)
 	if err == nil {
 		for _, stage := range stages {
-			var standings str.Standings
-			ret, err := getRanking(stage.ID)
+			standings, err := getRanking(stage.ID)
 			if err != nil {
-				return nil, err
+				return standings, err
 			}
-			_ = json.Unmarshal(ret, &standings)
 			for _, div := range standings {
 				if div.Participant.Name == team.Name {
 					subUrl := fmt.Sprintf(
@@ -56,14 +67,16 @@ func GetStandings(s string) ([]byte, error) {
 						seasonId,
 						stage.ID,
 						div.GroupID)
-					fmt.Println(subUrl)
 					rangeUrl := "items=0-49"
 					ret, err := toornamentRest(subUrl, rangeUrl)
 					if err != nil {
-						fmt.Println("foobar")
-						return nil, err
+						return standings, err
 					}
-					return ret, nil
+					err = json.Unmarshal([]byte(ret), &standings)
+					if err != nil {
+						return standings, err
+					}
+					return standings, err
 				}
 			}
 		}
@@ -72,12 +85,12 @@ func GetStandings(s string) ([]byte, error) {
 	// Get standings based on division name
 	for _, stage := range stages {
 		if stage.Name == s {
-			ret, err := getRanking(stage.ID)
+			standings, err := getRanking(stage.ID)
 			if err != nil {
-				return nil, err
+				return standings, err
 			}
-			return ret, nil
+			return standings, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find any standings")
+	return standings, fmt.Errorf("could not find correct standings")
 }
