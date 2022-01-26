@@ -14,7 +14,7 @@ settings: &settings
   k8s_server:
     from_secret: k8s_server
   ca:
-    from_secret: ca
+    from_secret: k8s_ca
   k8s_user: default
   actions: ["apply"]
   kustomize: true
