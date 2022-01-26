@@ -26,6 +26,7 @@ func toornamentRest(subPath string, rangeString string) ([]byte, error) {
 	}
 	request.Header.Set("X-Api-Key", toornamentApiKey)
 	request.Header.Set("Range", rangeString)
+	request.Header.Set("Content-Type", "application/json;charset=utf-8")
 	client := &http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	kanaliigaApi   = "https://Jha.kanaliiga.fi:8443"
+	kanaliigaApi   = "https://cssapi.kanalan.it"
 	kanaliigaToken = os.Getenv("KANALIIGA_TOKEN")
 )
 
@@ -93,4 +93,33 @@ func GetData(player *s.Player) error {
 	}
 
 	return nil
+}
+
+func GetTeamID(teamName string) (string, error) {
+	var kanaData struct {
+		Status string `json:"status"`
+		Data   []struct {
+			Name           string `json:"name"`
+			RegistrationID string `json:"registrationID"`
+		} `json:"data"`
+	}
+
+	subPath := fmt.Sprintf("teams/toornament/9")
+	data, err := restCall(subPath)
+	if err != nil {
+		return "", err
+	}
+
+	err = json.Unmarshal([]byte(data), &kanaData)
+	if err != nil {
+		return "", err
+	}
+
+	for _, d := range kanaData.Data {
+		if d.Name == teamName {
+			return d.RegistrationID, nil
+		}
+	}
+
+	return "", fmt.Errorf("could not find correct team")
 }

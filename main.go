@@ -18,11 +18,12 @@ func main() {
 	router.GET("/standings/:id", t.GetStandings)
 	router.GET("/match/next/:id", t.NextMatch)
 	if os.Getenv("GIN_MODE") == "release" {
-		err := router.Run()
+		err := router.Run(":8080")
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else {
+		router.SetTrustedProxies([]string{"localhost"})
 		router.Run("localhost:8080")
 	}
 }
