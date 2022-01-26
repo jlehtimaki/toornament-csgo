@@ -19,6 +19,8 @@ spec:
           image: quay.io/jlehtimaki/toornament-csgo
           imagePullPolicy: IfNotPresent
           env:
+            - name: GIN_MODE
+              value: release
             - name: SEASON_ID
               value: "5161204601415041024"
             - name: FACEIT_API_KEY

@@ -9,6 +9,7 @@ import (
 	t "github.com/jlehtimaki/toornament-csgo/pkg/toornament"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -16,7 +17,14 @@ func main() {
 	router.GET("/team/:id", getTeam)
 	router.GET("/standings/:id", t.GetStandings)
 	router.GET("/match/next/:id", t.NextMatch)
-	router.Run("localhost:8080")
+	if os.Getenv("GIN_MODE") == "release" {
+		err := router.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		router.Run("localhost:8080")
+	}
 }
 
 func foo(w http.ResponseWriter, r *http.Request) {
