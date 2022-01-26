@@ -40,3 +40,15 @@ spec:
             limits:
               cpu: "0.1"
               memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: toornament-csgo
+  namespace: kanarod
+spec:
+  selector:
+    app: toornament-csgo
+  ports:
+    - port: 8080
+      targetPort: 8080
