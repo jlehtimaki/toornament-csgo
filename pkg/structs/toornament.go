@@ -8,24 +8,24 @@ type Team struct {
 	Id           string   `json:"id"`
 	Name         string   `json:"name"`
 	Players      []Player `json:"lineup"`
-	BestMap		 Map
-	WorstMap	 Map
+	BestMap      Map
+	WorstMap     Map
 	Matches      Matches
-	CustomFields struct{
-		CaptainDiscord			string	`json:"kapteenin_discord_nick"`
-		ReserveCaptainDiscord	string	`json:"varakapteenin_discord"`
+	CustomFields struct {
+		CaptainDiscord        string `json:"kapteenin_discord_nick"`
+		ReserveCaptainDiscord string `json:"varakapteenin_discord"`
 	} `json:"custom_fields"`
 }
 
 type Player struct {
-	Name			string	`json:"name"`
-	CustomFields 	struct{
-		SteamId		string	`json:"steam_id_"`
+	Name         string `json:"name"`
+	CustomFields struct {
+		SteamId string `json:"steam_id_"`
 	} `json:"custom_fields"`
-	MM				struct{
-		Rank		string
+	MM struct {
+		Rank int
 	}
-	Faceit			struct{
+	Faceit struct {
 		Id             string
 		Rank           int
 		Elo            int
@@ -37,18 +37,18 @@ type Player struct {
 		KD             string
 		HSP            string
 	}
-	Esportal		struct{
-		Rank		string
+	Esportal struct {
+		Rank int
 	}
-	Kanaliiga	KanaliigaStat
+	Kanaliiga KanaliigaStat
 }
 
 type Map struct {
-	Name	string
-	Icon	string
-	WinRate	string
-	Matches	int
-	KD		string
+	Name    string
+	Icon    string
+	WinRate string
+	Matches int
+	KD      string
 }
 
 type Matches []Match
@@ -79,18 +79,18 @@ type Match struct {
 	} `json:"opponents"`
 }
 
-type Standings  []Division
+type Standings []Division
 
-type Division  struct {
+type Division struct {
 	ID          string `json:"id"`
 	GroupID     string `json:"group_id"`
 	Number      int    `json:"number"`
 	Position    int    `json:"position"`
 	Rank        int    `json:"rank"`
 	Participant struct {
-		ID           string `json:"id"`
-		Name         string `json:"name"`
-		CustomFields struct {} `json:"custom_fields"`
+		ID           string   `json:"id"`
+		Name         string   `json:"name"`
+		CustomFields struct{} `json:"custom_fields"`
 	} `json:"participant"`
 	Points     int `json:"points"`
 	Properties struct {
@@ -105,17 +105,17 @@ type Division  struct {
 	} `json:"properties"`
 }
 
-type Stages	[]struct{
-	ID		string	`json:"id"`
-	Name	string	`json:"name"`
+type Stages []struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type SeedTeam struct {
-	Name	string
-	Seed	int
+	Name             string
+	Seed             int
 	PlacementInGroup int
-	Points	int
-	PlusMinus int
-	Wins	int
-	GroupID	string
+	Points           int
+	PlusMinus        int
+	Wins             int
+	GroupID          string
 }

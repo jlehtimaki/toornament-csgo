@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -14,6 +15,7 @@ import (
 var (
 	kanaliigaApi   = "https://cssapi.kanalan.it"
 	kanaliigaToken = os.Getenv("KANALIIGA_TOKEN")
+	seasonID       = os.Getenv("SEASON")
 )
 
 func restCall(subPath string) ([]byte, error) {
@@ -92,34 +94,86 @@ func GetData(player *s.Player) error {
 		player.Kanaliiga.KanaRating = kanarating / float64(len(kanaliigaPlayer.Stats))
 	}
 
+	getRanks(player)
+	
 	return nil
 }
 
-func GetTeamID(teamName string) (string, error) {
+func GetTeamLeagueID(teamName string) (int, error) {
 	var kanaData struct {
 		Status string `json:"status"`
 		Data   []struct {
+			ID             int    `json:"id"`
 			Name           string `json:"name"`
+			LeagueID       int    `json:"leagueID"`
 			RegistrationID string `json:"registrationID"`
 		} `json:"data"`
 	}
 
-	subPath := fmt.Sprintf("teams/toornament/9")
+	subPath := fmt.Sprintf("teams/toornament/%s", seasonID)
 	data, err := restCall(subPath)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	err = json.Unmarshal([]byte(data), &kanaData)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	for _, d := range kanaData.Data {
 		if d.Name == teamName {
-			return d.RegistrationID, nil
+			return d.LeagueID, nil
 		}
 	}
 
-	return "", fmt.Errorf("could not find correct team")
+	return 0, fmt.Errorf("could not find correct team")
+}
+
+func GetMatches(teamName string) ([]s.KanaliigaMatch, error) {
+	type Matches struct {
+		Data []s.KanaliigaMatch `json:"data"`
+	}
+	matches := Matches{}
+
+	// First get leagueID
+	leagueID, err := GetTeamLeagueID(teamName)
+	if err != nil {
+		return []s.KanaliigaMatch{}, err
+	}
+
+	// Get all matches for that team
+	subPath := fmt.Sprintf("matches/%d", leagueID)
+	data, err := restCall(subPath)
+	if err != nil {
+		return []s.KanaliigaMatch{}, err
+	}
+
+	err = json.Unmarshal(data, &matches)
+	if err != nil {
+		return []s.KanaliigaMatch{}, err
+	}
+	return matches.Data, nil
+}
+
+func getRanks(player *s.Player) {
+	type Ranks struct {
+		Data []s.KanaliigaRanks `json:"data"`
+	}
+	ranks := Ranks{}
+	subPath := fmt.Sprintf("ranks/%s", player.CustomFields.SteamId)
+	data, err := restCall(subPath)
+	if err != nil {
+		log.Error(err);
+		return
+	}
+
+	err = json.Unmarshal(data, &ranks)
+	if err != nil {
+		log.Error(err);
+		return
+	}
+
+	player.Esportal.Rank = ranks.Data[0].EsportalRank
+	player.MM.Rank = ranks.Data[0].Rank
 }

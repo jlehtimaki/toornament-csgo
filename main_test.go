@@ -1,5 +1,12 @@
 package main
 
+//func TestIntegrationBestWorstMap(t *testing.T) {
+//	team := structs.Team{
+//		Name: "Polar Squad",
+//	}
+//	bestWorstMap(&team)
+//}
+
 //func TestIntegrationCSGOFunction(t *testing.T) {
 //	payload := strings.NewReader(`
 //{

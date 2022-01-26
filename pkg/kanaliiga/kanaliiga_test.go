@@ -16,12 +16,12 @@ func TestIntegrationParticipantGetTeam(t *testing.T) {
 }
 
 func TestIntegrationGetTeamID(t *testing.T) {
-	wanted := "5330666641945853952"
-	got, err := GetTeamID("PS. Tykitellään")
+	wanted := 48
+	got, err := GetTeamLeagueID("PS. Tykitellään")
 	if err != nil {
 		log.Fatal(err)
 	}
 	if wanted != got {
-		log.Fatalf("got %s - wanted %s", got, wanted)
+		log.Fatalf("got %d - wanted %d", got, wanted)
 	}
 }
