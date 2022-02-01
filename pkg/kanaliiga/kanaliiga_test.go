@@ -25,3 +25,11 @@ func TestIntegrationGetTeamID(t *testing.T) {
 		log.Fatalf("got %d - wanted %d", got, wanted)
 	}
 }
+
+//func TestIsScheduled(t *testing.T) {
+//	if IsScheduled("Polar Squad", "Nets") {
+//		fmt.Println("ya baby")
+//		return
+//	}
+//	log.Fatal("did not work")
+//}

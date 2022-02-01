@@ -1,11 +1,11 @@
 package toornament
 
+//
 //func TestIntegrationGetNextMatch(t *testing.T) {
-//	data, err := NextMatch("Polar Squad")
+//	data, err := GetTeam("Polar Squad")
 //	if err != nil {
-//		log.Fatal(err)
+//		t.Fatal(err)
 //	}
-//	if data == nil {
-//		log.Fatal("next match - data was empty")
-//	}
+//	foo, _ := json.MarshalIndent(data.Matches, "", "    ")
+//	//fmt.Println(string(foo))
 //}

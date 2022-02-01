@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -95,28 +96,43 @@ func GetData(player *s.Player) error {
 	}
 
 	getRanks(player)
-	
+
 	return nil
 }
 
-func GetTeamLeagueID(teamName string) (int, error) {
-	var kanaData struct {
-		Status string `json:"status"`
-		Data   []struct {
-			ID             int    `json:"id"`
-			Name           string `json:"name"`
-			LeagueID       int    `json:"leagueID"`
-			RegistrationID string `json:"registrationID"`
-		} `json:"data"`
-	}
-
+func getKanaTeams() (s.KanaToornament, error) {
+	var kanaData s.KanaToornament
 	subPath := fmt.Sprintf("teams/toornament/%s", seasonID)
 	data, err := restCall(subPath)
 	if err != nil {
-		return 0, err
+		return s.KanaToornament{}, err
 	}
 
-	err = json.Unmarshal([]byte(data), &kanaData)
+	err = json.Unmarshal(data, &kanaData)
+	if err != nil {
+		return s.KanaToornament{}, err
+	}
+
+	return kanaData, nil
+}
+
+func GetTeamID(teamName string) (int, error) {
+	kanaData, err := getKanaTeams()
+	if err != nil {
+		return 0, err
+	}
+	for _, d := range kanaData.Data {
+		if d.Name == teamName {
+			fmt.Println(d)
+			return d.ID, nil
+		}
+	}
+
+	return 0, fmt.Errorf("could not find correct team")
+}
+
+func GetTeamLeagueID(teamName string) (int, error) {
+	kanaData, err := getKanaTeams()
 	if err != nil {
 		return 0, err
 	}
@@ -164,16 +180,70 @@ func getRanks(player *s.Player) {
 	subPath := fmt.Sprintf("ranks/%s", player.CustomFields.SteamId)
 	data, err := restCall(subPath)
 	if err != nil {
-		log.Error(err);
+		log.Error(err)
 		return
 	}
 
 	err = json.Unmarshal(data, &ranks)
 	if err != nil {
-		log.Error(err);
+		log.Error(err)
 		return
 	}
 
 	player.Esportal.Rank = ranks.Data[0].EsportalRank
 	player.MM.Rank = ranks.Data[0].Rank
+}
+
+func GetScheduledMatches(c *gin.Context) {
+	team := c.Param("id")
+	s, err := scheduledMatches(team)
+	if err != nil {
+		log.Error(err)
+		c.IndentedJSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, s)
+	return
+}
+
+func scheduledMatches(teamName string) ([]s.ScheduledMatch, error) {
+	var calendar s.Calendar
+
+	teamID, err := GetTeamID(teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	subPath := fmt.Sprintf("calendar/%d", teamID)
+	data, err := restCall(subPath)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(data, &calendar)
+	if err != nil {
+		return nil, err
+	}
+
+	return calendar.Data, nil
+}
+
+func IsScheduled(team1 string, team2 string) bool {
+	matches, err := scheduledMatches(team1)
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+
+	team2ID, err := GetTeamID(team2)
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+
+	for _, match := range matches {
+		if match.Team1 == team2ID || match.Team2 == team2ID {
+			return true
+		}
+	}
+	return false
 }

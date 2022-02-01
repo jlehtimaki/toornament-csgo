@@ -18,6 +18,7 @@ func main() {
 	router.GET("/team/:id", getTeam)
 	router.GET("/standings/:id", t.GetStandings)
 	router.GET("/match/next/:id", t.NextMatch)
+	router.GET("/match/scheduled/:id", k.GetScheduledMatches)
 	if os.Getenv("GIN_MODE") == "release" {
 		err := router.Run(":8080")
 		if err != nil {

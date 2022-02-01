@@ -1,5 +1,7 @@
 package structs
 
+import "time"
+
 type Kanaliiga struct {
 	Stats []KanaliigaStat `json:"data"`
 }
@@ -43,4 +45,29 @@ type KanaliigaRanks struct {
 	Ekd          float64 `json:"ekd"`
 	EsportalElo  int     `json:"esportalElo"`
 	EsportalRank int     `json:"esportalRank"`
+}
+
+type Calendar struct {
+	Status string           `json:"status"`
+	Data   []ScheduledMatch `json:"data"`
+}
+
+type ScheduledMatch struct {
+	ID       int       `json:"id"`
+	ServerID int       `json:"serverID"`
+	Date     time.Time `json:"date"`
+	Team1    int       `json:"team1"`
+	Team2    int       `json:"team2"`
+	DateEnd  time.Time `json:"dateEnd"`
+	Stream   string    `json:"stream"`
+}
+
+type KanaToornament struct {
+	Status string `json:"status"`
+	Data   []struct {
+		ID             int    `json:"id"`
+		Name           string `json:"name"`
+		LeagueID       int    `json:"leagueID"`
+		RegistrationID string `json:"registrationID"`
+	} `json:"data"`
 }
