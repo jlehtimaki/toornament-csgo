@@ -39,7 +39,7 @@ steps:
       image_version: ${DRONE_COMMIT_SHA}
       image: quay.io/jlehtimaki/toornament-csgo
       rollout_timeout: 5m
-when:
+trigger:
   branch:
     - master
   event:

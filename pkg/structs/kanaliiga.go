@@ -60,8 +60,8 @@ type ScheduledMatch struct {
 	Team2     int       `json:"team2"`
 	DateEnd   time.Time `json:"dateEnd"`
 	Stream    string    `json:"stream"`
-	Team1Name string
-	Team2Name string
+	Team1Name string    `json:"team1Name"`
+	Team2Name string    `json:"team2Name"`
 }
 
 type KanaToornament struct {
