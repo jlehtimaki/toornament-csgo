@@ -43,7 +43,6 @@ when:
   branch:
     - master
   event:
-    - push
+    - tag
   exclude:
     - pull_request
-    - tag
