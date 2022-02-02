@@ -244,7 +244,7 @@ func scheduledMatches(teamName string) ([]s.ScheduledMatch, error) {
 
 	today := time.Now()
 	for _, match := range calendar.Data {
-		if today.After(match.Date) {
+		if today.Before(match.Date) {
 			scheduledMatches = append(scheduledMatches, match)
 		}
 	}
