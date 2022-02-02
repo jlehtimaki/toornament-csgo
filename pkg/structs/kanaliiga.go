@@ -53,13 +53,15 @@ type Calendar struct {
 }
 
 type ScheduledMatch struct {
-	ID       int       `json:"id"`
-	ServerID int       `json:"serverID"`
-	Date     time.Time `json:"date"`
-	Team1    int       `json:"team1"`
-	Team2    int       `json:"team2"`
-	DateEnd  time.Time `json:"dateEnd"`
-	Stream   string    `json:"stream"`
+	ID        int       `json:"id"`
+	ServerID  int       `json:"serverID"`
+	Date      time.Time `json:"date"`
+	Team1     int       `json:"team1"`
+	Team2     int       `json:"team2"`
+	DateEnd   time.Time `json:"dateEnd"`
+	Stream    string    `json:"stream"`
+	Team1Name string
+	Team2Name string
 }
 
 type KanaToornament struct {

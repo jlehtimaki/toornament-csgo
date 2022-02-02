@@ -33,3 +33,10 @@ func TestIntegrationGetTeamID(t *testing.T) {
 //	}
 //	log.Fatal("did not work")
 //}
+
+func TestGetScheduledMatches(t *testing.T) {
+	_, err := scheduledMatches("Polar Squad")
+	if err != nil {
+		log.Fatal(err)
+	}
+}

@@ -123,7 +123,6 @@ func GetTeamID(teamName string) (int, error) {
 	}
 	for _, d := range kanaData.Data {
 		if d.Name == teamName {
-			fmt.Println(d)
 			return d.ID, nil
 		}
 	}
@@ -222,6 +221,24 @@ func scheduledMatches(teamName string) ([]s.ScheduledMatch, error) {
 	err = json.Unmarshal(data, &calendar)
 	if err != nil {
 		return nil, err
+	}
+
+	teams, err := getKanaTeams()
+	if err != nil {
+		return nil, err
+	}
+	for _, t := range teams.Data {
+		for n, m := range calendar.Data {
+			if calendar.Data[n].Team1Name != "" && calendar.Data[n].Team2Name != "" {
+				break
+			}
+			if m.Team1 == t.ID {
+				calendar.Data[n].Team1Name = t.Name
+			}
+			if m.Team2 == t.ID {
+				calendar.Data[n].Team2Name = t.Name
+			}
+		}
 	}
 
 	return calendar.Data, nil
