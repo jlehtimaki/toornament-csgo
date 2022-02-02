@@ -21,6 +21,8 @@ spec:
           env:
             - name: GIN_MODE
               value: release
+            - name: SEASON
+              value: "9"
             - name: SEASON_ID
               value: "5161204601415041024"
             - name: FACEIT_API_KEY
