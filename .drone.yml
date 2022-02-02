@@ -40,9 +40,5 @@ steps:
       image: quay.io/jlehtimaki/toornament-csgo
       rollout_timeout: 5m
 trigger:
-  branch:
-    - master
   event:
     - tag
-  exclude:
-    - pull_request
