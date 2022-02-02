@@ -207,6 +207,7 @@ func GetScheduledMatches(c *gin.Context) {
 
 func scheduledMatches(teamName string) ([]s.ScheduledMatch, error) {
 	var calendar s.Calendar
+	var scheduledMatches []s.ScheduledMatch
 
 	teamID, err := GetTeamID(teamName)
 	if err != nil {
@@ -241,7 +242,14 @@ func scheduledMatches(teamName string) ([]s.ScheduledMatch, error) {
 		}
 	}
 
-	return calendar.Data, nil
+	today := time.Now()
+	for _, match := range calendar.Data {
+		if today.After(match.Date) {
+			scheduledMatches = append(scheduledMatches, match)
+		}
+	}
+
+	return scheduledMatches, nil
 }
 
 func IsScheduled(team1 string, team2 string) bool {
