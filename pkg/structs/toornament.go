@@ -23,7 +23,7 @@ type Player struct {
 		SteamId string `json:"steam_id_"`
 	} `json:"custom_fields"`
 	MM struct {
-		Rank int
+		Rank string
 	}
 	Faceit struct {
 		Id             string
@@ -38,7 +38,7 @@ type Player struct {
 		HSP            string
 	}
 	Esportal struct {
-		Rank int
+		Rank string
 	}
 	Kanaliiga KanaliigaStat
 }
