@@ -30,7 +30,7 @@ steps:
         from_secret: password
       registry: "quay.io"
       repo: "quay.io/jlehtimaki/toornament-csgo"
-      tags: ${DRONE_TAG}
+      tags: ${DRONE_COMMIT_SHA}
   - <<: *defaults
     name: Deployment
     settings:
