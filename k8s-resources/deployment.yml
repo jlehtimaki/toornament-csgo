@@ -43,8 +43,8 @@ spec:
             - name: ACCESS_TOKEN
               valueFrom:
                 secretKeyRef:
-                  key: toornament-csgo
-                  name: access-token
+                  key: access-token
+                  name: toornament-csgo
           resources:
             limits:
               cpu: "0.1"
