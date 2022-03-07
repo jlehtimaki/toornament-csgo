@@ -36,9 +36,6 @@ steps:
     settings:
       <<: *settings
       manifest_dir: k8s-resources
-      image_version: ${DRONE_TAG}
+      image_version: ${DRONE_COMMIT_SHA}
       image: quay.io/jlehtimaki/toornament-csgo
       rollout_timeout: 5m
-trigger:
-  event:
-    - tag

@@ -1,15 +1,34 @@
 package toornament
 
 import (
-	"encoding/json"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	log "github.com/sirupsen/logrus"
+	"net/http"
 	"sort"
 	"strings"
 )
 
+func Seed(c *gin.Context) {
+	var data map[string]map[string][]structs.SeedTeam
+	var err error
+	division := c.Param("id")
+	if division == "" {
+		data, err = getSeed("")
+	} else {
+		data, err = getSeed(division)
+	}
+	if err != nil {
+		log.Error(err)
+		c.IndentedJSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, data)
+	return
+}
+
 // Get the current seed based on rankings in all divisions
-func GetSeed(div string) ([]byte, error) {
+func getSeed(div string) (map[string]map[string][]structs.SeedTeam, error) {
 	seed := map[string]map[string][]structs.SeedTeam{}
 	seed["playoffs"] = map[string][]structs.SeedTeam{}
 	seed["pityplayoffs"] = map[string][]structs.SeedTeam{}
@@ -64,13 +83,7 @@ func GetSeed(div string) ([]byte, error) {
 			seed["pityplayoffs"][stage.Name] = seeding
 		}
 	}
-	// Prettify the JSON struct
-	b, err := json.MarshalIndent(seed, "", "  ")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return b, nil
+	return seed, nil
 }
 
 func getStandings(div string, pity bool) ([]structs.SeedTeam, error) {

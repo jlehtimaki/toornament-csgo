@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	f "github.com/jlehtimaki/toornament-csgo/pkg/faceit"
 	k "github.com/jlehtimaki/toornament-csgo/pkg/kanaliiga"
@@ -19,6 +17,8 @@ func main() {
 	router.GET("/standings/:id", t.GetStandings)
 	router.GET("/match/next/:id", t.NextMatch)
 	router.GET("/match/scheduled/:id", k.GetScheduledMatches)
+	router.GET("/seed", t.Seed)
+	router.GET("/seed/:id", t.Seed)
 	if os.Getenv("GIN_MODE") == "release" {
 		err := router.Run(":8080")
 		if err != nil {
@@ -28,38 +28,6 @@ func main() {
 		router.SetTrustedProxies([]string{"localhost"})
 		router.Run("localhost:8080")
 	}
-}
-
-func foo(w http.ResponseWriter, r *http.Request) {
-	// Payload checks
-	var ret []byte
-	var err error
-	var d struct {
-		Type  string `json:"type"`
-		Value string `json:"value"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
-		log.Errorf("wrong type of payload")
-		panic("error occured, check logs")
-	}
-	if d.Type == "" {
-		log.Errorf("type is empty")
-		panic("error occured, check logs")
-	}
-
-	if d.Type == "seed" {
-		log.Info("getting seeds")
-		if d.Value != "" {
-			ret, err = t.GetSeed(d.Value)
-		} else {
-			ret, err = t.GetSeed("")
-		}
-		if err != nil {
-			log.Fatal(err)
-			panic("error occured while getting seeding list")
-		}
-	}
-	_, _ = fmt.Fprintf(w, string(ret))
 }
 
 func getTeam(c *gin.Context) {
