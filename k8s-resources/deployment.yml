@@ -40,6 +40,11 @@ spec:
                 secretKeyRef:
                   key: kanaliiga
                   name: toornament-csgo
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: toornament-csgo
+                  name: access-token
           resources:
             limits:
               cpu: "0.1"

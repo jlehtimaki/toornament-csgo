@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/limit-connections: "5"
+    nginx.ingress.kubernetes.io/limit-rps: "15"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  labels:
+    app: toornament-csgo
+  name: csgoapi
+  namespace: kanarod
+spec:
+  rules:
+  - host: csgoapi.lehtux.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: toornament-csgo
+            port:
+              number: 8080
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - csgoapi.lehtux.com
+    secretName: tls-secret

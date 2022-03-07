@@ -3,6 +3,7 @@ package toornament
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	u "github.com/jlehtimaki/toornament-csgo/pkg/utils"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"sort"
@@ -10,6 +11,10 @@ import (
 )
 
 func Seed(c *gin.Context) {
+	if !u.Verify(c) {
+		c.IndentedJSON(http.StatusForbidden, "authentication failure")
+		return
+	}
 	var data map[string]map[string][]structs.SeedTeam
 	var err error
 	division := c.Param("id")

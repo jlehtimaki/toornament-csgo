@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	str "github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	u "github.com/jlehtimaki/toornament-csgo/pkg/utils"
 	"net/http"
 )
 
@@ -36,6 +37,10 @@ func getRanking(stageId string) (str.Standings, error) {
 }
 
 func GetStandings(c *gin.Context) {
+	if !u.Verify(c) {
+		c.IndentedJSON(http.StatusForbidden, "authentication failure")
+		return
+	}
 	s := c.Param("id")
 	standings, err := standings(s)
 	if err != nil {

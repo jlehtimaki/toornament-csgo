@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	u "github.com/jlehtimaki/toornament-csgo/pkg/utils"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -194,6 +195,10 @@ func getRanks(player *s.Player) {
 }
 
 func GetScheduledMatches(c *gin.Context) {
+	if !u.Verify(c) {
+		c.IndentedJSON(http.StatusForbidden, "authentication failure")
+		return
+	}
 	team := c.Param("id")
 	s, err := scheduledMatches(team)
 	if err != nil {

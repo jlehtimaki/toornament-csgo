@@ -6,6 +6,7 @@ import (
 	k "github.com/jlehtimaki/toornament-csgo/pkg/kanaliiga"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
 	t "github.com/jlehtimaki/toornament-csgo/pkg/toornament"
+	u "github.com/jlehtimaki/toornament-csgo/pkg/utils"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
@@ -31,6 +32,10 @@ func main() {
 }
 
 func getTeam(c *gin.Context) {
+	if !u.Verify(c) {
+		c.IndentedJSON(http.StatusForbidden, "authentication failure")
+		return
+	}
 	teamName := c.Param("id")
 	// Get information about the team
 	team, err := t.GetTeam(teamName)
