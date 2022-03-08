@@ -5,6 +5,7 @@ import (
 	"fmt"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
 	log "github.com/sirupsen/logrus"
+	"strings"
 )
 
 func GetTeam(teamName string) (s.Team, error) {
@@ -54,7 +55,7 @@ func getTeamID(teamName string, tournamentID string) (string, error) {
 		err = json.Unmarshal([]byte(data), &participants)
 
 		for _, p := range participants {
-			if p.Name == teamName {
+			if strings.ToLower(p.Name) == strings.ToLower(teamName) {
 				return p.ID, nil
 			}
 		}

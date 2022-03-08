@@ -39,7 +39,7 @@ func NextMatch(c *gin.Context) {
 			}
 		}
 	}
-	log.Error(fmt.Errorf("something went wrong with getting next match"))
-	c.IndentedJSON(http.StatusInternalServerError, err)
+	log.Warn(fmt.Errorf("could not find any matches for team %s", t.Name))
+	c.IndentedJSON(http.StatusNotFound, "could not find any matches")
 	return
 }
