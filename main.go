@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	c "github.com/jlehtimaki/toornament-csgo/pkg/csgostats"
 	f "github.com/jlehtimaki/toornament-csgo/pkg/faceit"
 	k "github.com/jlehtimaki/toornament-csgo/pkg/kanaliiga"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
@@ -20,6 +21,7 @@ func main() {
 	router.GET("/match/scheduled/:id", k.GetScheduledMatches)
 	router.GET("/seed", t.Seed)
 	router.GET("/seed/:id", t.Seed)
+	router.GET("/rank/mm/:id", c.GetRank)
 	if os.Getenv("GIN_MODE") == "release" {
 		err := router.Run(":8080")
 		if err != nil {

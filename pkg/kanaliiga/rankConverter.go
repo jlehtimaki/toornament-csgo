@@ -1,6 +1,6 @@
 package kanaliiga
 
-func rankConverter(level int, league string) string {
+func RankConverter(level int, league string) string {
 	mmRanks := map[int]string{
 		1:  "Silver I",
 		2:  "Silver II",

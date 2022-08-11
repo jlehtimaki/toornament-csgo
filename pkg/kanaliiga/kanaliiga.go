@@ -190,8 +190,8 @@ func getRanks(player *s.Player) {
 		return
 	}
 
-	player.Esportal.Rank = rankConverter(ranks.Data[0].EsportalRank, "Esportal")
-	player.MM.Rank = rankConverter(ranks.Data[0].Rank, "MM")
+	player.Esportal.Rank = RankConverter(ranks.Data[0].EsportalRank, "Esportal")
+	player.MM.Rank = RankConverter(ranks.Data[0].Rank, "MM")
 }
 
 func GetScheduledMatches(c *gin.Context) {
