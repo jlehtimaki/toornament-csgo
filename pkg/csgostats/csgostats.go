@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-var csgostatsUrl = "http://localhost:8080/stats"
+var csgostatsUrl = "http://csgostats:8080/stats"
 
 type PlayerRank struct {
 	SteamId string
