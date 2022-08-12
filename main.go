@@ -29,7 +29,7 @@ func main() {
 		}
 	} else {
 		router.SetTrustedProxies([]string{"localhost"})
-		router.Run("localhost:8080")
+		router.Run("localhost:8081")
 	}
 }
 

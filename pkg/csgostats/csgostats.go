@@ -41,13 +41,19 @@ func GetRank(c *gin.Context) {
 	}
 	client := &http.Client{}
 	resp, err := client.Do(request)
+	if resp.StatusCode != 200 {
+		log.Infof("could not find rank for user %s", steamId)
+		c.AbortWithStatus(404)
+		return
+	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Error(err)
+		log.Info(err)
 		c.IndentedJSON(http.StatusInternalServerError, err)
 		return
 	}
 	err = json.Unmarshal(body, &csgoStats)
+	fmt.Println(err)
 	if err != nil {
 		log.Error(err)
 		c.IndentedJSON(http.StatusInternalServerError, err)
