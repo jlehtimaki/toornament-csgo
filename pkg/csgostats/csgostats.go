@@ -27,7 +27,7 @@ type CsgoStats struct {
 
 func GetRank(c *gin.Context) {
 	if !u.Verify(c) {
-		c.IndentedJSON(http.StatusForbidden, "authentication failure")
+		c.IndentedJSON(http.StatusForbidden, "getRank: authentication failure")
 		return
 	}
 	steamId := c.Param("id")

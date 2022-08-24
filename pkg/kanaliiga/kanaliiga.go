@@ -222,6 +222,7 @@ func scheduledMatches(teamName string) ([]s.ScheduledMatch, error) {
 	subPath := fmt.Sprintf("calendar/%d", teamID)
 	data, err := restCall(subPath)
 	if err != nil {
+		log.Errorf("could not see calendar")
 		return nil, err
 	}
 	err = json.Unmarshal(data, &calendar)

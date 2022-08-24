@@ -11,15 +11,15 @@ func TestIntegrationParticipantGetTeam(t *testing.T) {
 	player.CustomFields.SteamId = "76561198049624788"
 	err := GetData(&player)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("get participant: %s", err)
 	}
 }
 
 func TestIntegrationGetTeamID(t *testing.T) {
 	wanted := 48
-	got, err := GetTeamLeagueID("PS. Tykitellään")
+	got, err := GetTeamLeagueID("Polar Squad")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("getTeamId: %s", err)
 	}
 	if wanted != got {
 		log.Fatalf("got %d - wanted %d", got, wanted)

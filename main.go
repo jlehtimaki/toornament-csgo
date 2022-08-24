@@ -29,13 +29,13 @@ func main() {
 		}
 	} else {
 		router.SetTrustedProxies([]string{"localhost"})
-		router.Run("localhost:8081")
+		router.Run("localhost:8080")
 	}
 }
 
 func getTeam(c *gin.Context) {
 	if !u.Verify(c) {
-		c.IndentedJSON(http.StatusForbidden, "authentication failure")
+		c.IndentedJSON(http.StatusForbidden, "getTeam: authentication failure")
 		return
 	}
 	teamName := c.Param("id")

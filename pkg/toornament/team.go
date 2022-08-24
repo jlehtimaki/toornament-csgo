@@ -36,12 +36,11 @@ func GetTeam(teamName string) (s.Team, error) {
 
 func getTeamID(teamName string, tournamentID string) (string, error) {
 	type Participant struct {
-		ID           string `json:"id"`
-		TournamentID string `json:"tournament_id"`
-		Name         string `json:"name"`
+		ID   string `json:"id"`
+		Name string `json:"name"`
 	}
 	var participants []Participant
-	subPath := fmt.Sprintf("viewer/v2/participants?tournament_ids=%s", tournamentID)
+	subPath := fmt.Sprintf("viewer/v2/tournaments/%s/participants", tournamentID)
 
 	participantId1 := 0
 	participantId2 := 49
@@ -73,7 +72,6 @@ func matches(team *s.Team) {
 	data, err := toornamentRest(subPath, rangeString)
 	if err != nil {
 		log.Fatalf("could not get next games: %s", err)
-		panic("something went wrong")
 	}
 	_ = json.Unmarshal(data, &matches)
 	team.Matches = matches

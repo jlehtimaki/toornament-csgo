@@ -7,5 +7,5 @@ package toornament
 //		t.Fatal(err)
 //	}
 //	foo, _ := json.MarshalIndent(data.Matches, "", "    ")
-//	//fmt.Println(string(foo))
+//	fmt.Println(string(foo))
 //}
