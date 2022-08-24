@@ -3,8 +3,11 @@ package toornament
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	s "github.com/jlehtimaki/toornament-csgo/pkg/structs"
+	u "github.com/jlehtimaki/toornament-csgo/pkg/utils"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 	"strings"
 )
 
@@ -30,7 +33,7 @@ func GetTeam(teamName string) (s.Team, error) {
 	}
 
 	// Get matches
-	matches(&team)
+	team.Matches = matches(team.Id)
 	return team, nil
 }
 
@@ -64,15 +67,30 @@ func getTeamID(teamName string, tournamentID string) (string, error) {
 	return "", fmt.Errorf("could not find correct team")
 }
 
-func matches(team *s.Team) {
+func GetMatches(c *gin.Context) {
+	if !u.Verify(c) {
+		c.IndentedJSON(http.StatusForbidden, "getTeam: authentication failure")
+		return
+	}
+	teamName := c.Param("id")
+	teamId, err := getTeamID(teamName, seasonId)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, err)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, matches(teamId))
+	return
+}
+
+func matches(teamId string) s.Matches {
 	var matches s.Matches
 	subPath := fmt.Sprintf(
-		"viewer/v2/tournaments/%s/matches?participant_ids=%s", seasonId, team.Id)
+		"viewer/v2/tournaments/%s/matches?participant_ids=%s", seasonId, teamId)
 	rangeString := "matches=0-50"
 	data, err := toornamentRest(subPath, rangeString)
 	if err != nil {
 		log.Fatalf("could not get next games: %s", err)
 	}
 	_ = json.Unmarshal(data, &matches)
-	team.Matches = matches
+	return matches
 }

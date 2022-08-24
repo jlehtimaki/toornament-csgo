@@ -1,16 +1,20 @@
 # toornament-csgo
 This project is meant to provide player data (MM, Faceit, Esportal ranks, etc...) from a team in Toornament
-Project is optimised to be run in Cloud Functions.
+Project runs in `https://csgoapi.lehtux.com` . For access, please contact me.
  
-## Usage
-This fuction expects the payload to have two values `type` and `value`
+## Abilities
+This REST API can deliver these values
 
-| Type          | Values        | Description           |
-|------         |:---------:    |---------------------- |
-|team           | Team Name     | Gets data of the team |
-|standings      | Division name | Gets the standings either based on Division name or Team name   |
-|seed           | Empty for all Divs or Div name for specific             | Get the current seed of the tournament |
-|rank/mm/:id    | Steam ID      | Gives MM rank fetched from csgostats |
+| Path                |     Value     | Description                                                   |
+|---------------------|:-------------:|---------------------------------------------------------------|
+| team/:id            |   Team Name   | Gets data of the team                                         |
+| standings/:id       |   Team Name   | Gets the standings either based on Division name or Team name |
+| match/next/:id      |   Team Name   | Get Next match for the team                                   |
+| match/scheduled/:id |   Team Name   | Get Next scheduled match for the team                         |
+| match/all/:id       |   Team Name   | Get all matches for that team                                 |
+| seed                |       -       | Get Seedings for all the divisions                            |
+| seed/:id             | Division Name | Get Seeding for the division                                  |
+| rank/mm/:id         |   Steam ID    | Gives MM rank fetched from csgostats                          |
 
 ### Environment variables
 Function also requires certain environment variables to be able to fetch data

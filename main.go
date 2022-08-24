@@ -19,6 +19,7 @@ func main() {
 	router.GET("/standings/:id", t.GetStandings)
 	router.GET("/match/next/:id", t.NextMatch)
 	router.GET("/match/scheduled/:id", k.GetScheduledMatches)
+	router.GET("/match/all/:id", t.GetMatches)
 	router.GET("/seed", t.Seed)
 	router.GET("/seed/:id", t.Seed)
 	router.GET("/rank/mm/:id", c.GetRank)
